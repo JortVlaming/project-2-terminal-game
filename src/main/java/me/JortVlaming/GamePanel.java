@@ -2,6 +2,7 @@ package me.JortVlaming;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -15,12 +16,27 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol; // 1028 pixels
     final int screenHeight = tileSize * maxScreenRow; // 768 pixels
 
+    private boolean running = false;
+    private final int TARGET_FPS = 60;
+
+    Input input = new Input(scale);
     Thread gameThread;
+
+    // Set player's default psoition
+    int playerX = 100, playerY = 100;
+    int playerSpeed = 4;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
+
+        this.addKeyListener(input);
+        this.addMouseListener(input);
+        this.addMouseMotionListener(input);
+        this.addMouseWheelListener(input);
+
+        this.setFocusable(true);
     }
 
     public void startGameThread() {
@@ -28,19 +44,55 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
+    int fps = 0;
+
     @Override
     public void run() {
-        while (gameThread != null && gameThread.isAlive()) {
-            // 1 UPDATE: update information such as character position
-            update();
+        running = true;
 
-            // 2 RENDER: render the screen with the updated information
-            repaint();
+        double drawInterval = (double) 1000000000/TARGET_FPS;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+        long timer = 0;
+        int drawCount = 0;
+
+        while (running) {
+            currentTime = System.nanoTime();
+
+            delta += (currentTime - lastTime) / drawInterval;
+            timer += (currentTime - lastTime);
+
+            lastTime = currentTime;
+
+            if (delta >= 1) {
+                update();
+                repaint();
+                delta--;
+                drawCount++;
+            }
+
+            if (timer >= 1000000000) {
+                System.out.println("FPS: " + drawCount);
+                drawCount = 0;
+                timer = 0;
+            }
         }
     }
 
     public void update() {
-
+        if (input.isKey(KeyEvent.VK_W)) {
+            playerY -= playerSpeed;
+        }
+        if (input.isKey(KeyEvent.VK_S)) {
+            playerY += playerSpeed;
+        }
+        if (input.isKey(KeyEvent.VK_A)) {
+            playerX -= playerSpeed;
+        }
+        if (input.isKey(KeyEvent.VK_D)) {
+            playerX += playerSpeed;
+        }
     }
 
     @Override
@@ -51,7 +103,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         g2D.setColor(Color.WHITE);
 
-        g2D.fillRect(100, 100, tileSize, tileSize);
+        g2D.fillRect(playerX, playerY, tileSize, tileSize);
 
         g2D.dispose();
     }
