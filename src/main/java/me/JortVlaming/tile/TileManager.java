@@ -21,7 +21,7 @@ public class TileManager {
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        mapTileNum = new int[gp.getMaxScreenCol()][gp.getMaxScreenRow()];
+        mapTileNum = new int[gp.getMaxWorldCol()][gp.getMaxWorldRow()];
 
         loadTiles();
     }
@@ -34,21 +34,33 @@ public class TileManager {
         Collections.sort(tileMap);
 
         for (int i = 0; i < tileMap.size(); i++) {
-            tiles[tileMap.get(i).getIndex()] = new Tile();
+            int index = tileMap.get(i).getIndex();
+            if (index >= tiles.length) {
+                System.err.println("Error: Index " + index + " is out of bounds for the tiles array.");
+                continue;
+            }
+            tiles[index] = new Tile();
             try {
                 InputStream is = getClass().getResourceAsStream("/tiles/" + tileMap.get(i).getFileName());
                 if (is == null) {
                     System.out.println("Failed to load tile " + 1);
                     if (i != 0) {
-                        tiles[tileMap.get(i).getIndex()] = tiles[0];
+                        tiles[index] = tiles[0];
                     }
                     continue;
                 }
-                tiles[tileMap.get(i).getIndex()].image = ImageIO.read(is);
-                tiles[tileMap.get(i).getIndex()].collision = tileMap.get(i).hasCollision();
-                System.out.println("Loaded tile " + tileMap.get(i).getIndex() + " as " + tileMap.get(i).name());
+                tiles[index].image = ImageIO.read(is);
+                tiles[index].collision = tileMap.get(i).hasCollision();
+                System.out.println("Loaded tile " + index + " as " + tileMap.get(i).name());
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            }
+        }
+
+        for (int i = 0; i < tiles.length; i++) {
+            if (tiles[i] == null) {
+                tiles[i] = new Tile(); // assign a default tile
+                System.out.println("Filled empty tile at index " + i + " with a default tile.");
             }
         }
     }
@@ -66,17 +78,39 @@ public class TileManager {
 
             int col = 0, row = 0;
 
-            while (col < gp.getMaxScreenCol() && row < gp.getMaxScreenRow()) {
+            while (row < gp.getMaxWorldRow()) {
                 String line = br.readLine();
 
+                if (line == null) {
+                    System.out.println("Reached end of map file before filling the map. Filling remaining rows with default tiles.");
+                    for (int fillRow = row; fillRow < gp.getMaxWorldRow(); fillRow++) {
+                        Arrays.fill(mapTileNum[fillRow], 0);
+                    }
+                    break;
+                }
+
                 String[] nums = line.split(" ");
-                while (col < gp.getMaxScreenCol()) {
-                    int num = Integer.parseInt(nums[col]);
+
+                while (col < gp.getMaxWorldCol()) {
+                    int num = 0; // Default to tile index 0
+                    if (col < nums.length) {
+                        try {
+                            num = Integer.parseInt(nums[col]);
+                            if (num >= tiles.length || num < 0) {
+                                System.err.println("Invalid tile index " + num + " at position (" + col + ", " + row + "). Defaulting to 0.");
+                                num = 0;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.err.println("Invalid number format at column " + col + ", row " + row + ". Defaulting to 0.");
+                            num = 0;
+                        }
+                    }
 
                     mapTileNum[col][row] = num;
                     col++;
                 }
-                if (col == gp.getMaxScreenCol()) {
+
+                if (col == gp.getMaxWorldCol()) {
                     col = 0;
                     row++;
                 }
@@ -89,45 +123,28 @@ public class TileManager {
         }
     }
 
-    boolean destinedToFailDrawAll = false;
-
-    public void drawAll(Graphics2D g2D) {
-        if (destinedToFailDrawAll) return;
-        int x = 0, y = 0;
-
-        for (Tile t : tiles) {
-            if (x > gp.getMaxScreenCol()) {
-                x = 0;
-                y++;
-            }
-
-            if (y > gp.getMaxScreenRow()) {
-                System.out.println("Failed to render all tiles to the screen to a size constraint, will not draw again!");
-                destinedToFailDrawAll = true;
-                break;
-            }
-
-            g2D.drawImage(t.image, x*gp.getTileSize(), y*gp.getTileSize(), gp.getTileSize(), gp.getTileSize(), null);
-
-            x++;
-        }
-    }
-
     public void draw(Graphics2D g2D) {
-        int col = 0, row = 0;
-        int x = 0, y = 0;
+        int worldCol = 0, worldRow = 0;
 
-        while (col < gp.getMaxScreenCol() && row < gp.getMaxScreenRow()) {
-            Tile toDraw = tiles[mapTileNum[col][row]];
-            g2D.drawImage(toDraw.image, x, y, gp.getTileSize(), gp.getTileSize(), null);
-            col++;
-            x += gp.getTileSize();
+        while (worldCol < gp.getMaxWorldCol() && worldRow < gp.getMaxWorldRow()) {
+            int tileNum = mapTileNum[worldCol][worldRow];
 
-            if (col == gp.getMaxScreenCol()) {
-                col = 0;
-                x = 0;
-                row++;
-                y += gp.getTileSize();
+            int worldX = worldCol * gp.getTileSize();
+            int worldY = worldRow * gp.getTileSize();
+            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
+            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+
+            if (worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().screenX &&
+                worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().screenX &&
+                worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().screenY &&
+                worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().screenY) {
+                g2D.drawImage(tiles[tileNum].image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            }
+            worldCol++;
+
+            if (worldCol == gp.getMaxWorldCol()) {
+                worldCol = 0;
+                worldRow++;
             }
         }
     }

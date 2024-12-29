@@ -2,11 +2,9 @@ package me.JortVlaming.game;
 
 import me.JortVlaming.entity.Player;
 import me.JortVlaming.tile.TileManager;
-import me.JortVlaming.tile.TileMap;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -20,6 +18,11 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol; // 1028 pixels
     final int screenHeight = tileSize * maxScreenRow; // 768 pixels
 
+    // WORLD SETTINGS
+    final int maxWorldCol = 50, maxWorldRow = 50;
+    final int worldWith = tileSize * maxWorldCol, worldHeight = tileSize * maxWorldRow;
+
+    // GAMELOOP SETTINGS
     boolean running = false;
     final int TARGET_FPS = 60;
     final boolean LIMIT_FPS = true;
@@ -111,5 +114,25 @@ public class GamePanel extends JPanel implements Runnable {
 
     public int getMaxScreenRow() {
         return maxScreenRow;
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public int getMaxWorldCol() {
+        return maxWorldCol;
+    }
+
+    public int getMaxWorldRow() {
+        return maxWorldRow;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

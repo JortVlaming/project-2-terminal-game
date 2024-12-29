@@ -13,15 +13,21 @@ public class Player extends Entity{
     GamePanel gp;
     Input i;
 
+    public final int screenX;
+    public final int screenY;
+
     public Player(GamePanel gp, Input i) {
         this.gp = gp;
         this.i = i;
         this.reset();
+        screenX = gp.getScreenWidth()/2-gp.getTileSize()/2;
+        screenY = gp.getScreenHeight()/2-gp.getTileSize()/2;
     }
 
+    int normalSpeed = 4;
     public void reset() {
-        x = 100;
-        y = 100;
+        worldX = 23*gp.getTileSize();
+        worldY = 21*gp.getTileSize();
         speed = 4;
 
         direction = 2;
@@ -43,24 +49,31 @@ public class Player extends Entity{
     @Override
     public void update() {
         boolean moved = false;
+
+        if (i.isButton(6)) {
+            speed = normalSpeed*2;
+        } else {
+            speed = normalSpeed;
+        }
+
         if (i.isKey(KeyEvent.VK_W)) {
             direction = 0;
-            y -= speed;
+            worldY -= speed;
             moved = true;
         }
         if (i.isKey(KeyEvent.VK_S)) {
             direction = 2;
-            y += speed;
+            worldY += speed;
             moved = true;
         }
         if (i.isKey(KeyEvent.VK_A)) {
             direction = 3;
-            x -= speed;
+            worldX -= speed;
             moved = true;
         }
         if (i.isKey(KeyEvent.VK_D)) {
             direction = 1;
-            x += speed;
+            worldX += speed;
             moved = true;
         }
 
@@ -97,6 +110,6 @@ public class Player extends Entity{
             }
         }
 
-        g2D.drawImage(image, x, y, gp.getTileSize(), gp.getTileSize(), null);
+        g2D.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
     }
 }
