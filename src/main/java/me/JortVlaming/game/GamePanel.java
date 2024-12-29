@@ -40,6 +40,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.addMouseWheelListener(input);
 
         this.setFocusable(true);
+
+        tileManager.loadMap("test");
     }
 
     public void startGameThread() {
@@ -91,7 +93,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2D = (Graphics2D) g;
 
-        tileManager.drawAll(g2D);
+        //tileManager.drawAll(g2D);
+        tileManager.draw(g2D);
 
         player.draw(g2D);
 

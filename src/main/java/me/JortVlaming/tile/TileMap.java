@@ -41,9 +41,15 @@ public enum TileMap {
     STAIRS2(37);
 
     private int index;
+    private boolean collision = false;
 
     TileMap(int index) {
         this.index = index;
+    }
+
+    TileMap(int index, boolean collision) {
+        this.index = index;
+        this.collision = collision;
     }
 
     public int getIndex() {
@@ -52,5 +58,9 @@ public enum TileMap {
 
     public String getFileName() {
         return String.format("%03d", index) + ".png";
+    }
+
+    public boolean hasCollision() {
+        return collision;
     }
 }
