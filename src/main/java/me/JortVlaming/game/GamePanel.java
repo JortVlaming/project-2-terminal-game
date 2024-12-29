@@ -1,4 +1,6 @@
-package me.JortVlaming;
+package me.JortVlaming.game;
+
+import me.JortVlaming.entity.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,15 +18,13 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol; // 1028 pixels
     final int screenHeight = tileSize * maxScreenRow; // 768 pixels
 
-    private boolean running = false;
-    private final int TARGET_FPS = 60;
+    boolean running = false;
+    final int TARGET_FPS = 60;
+    final boolean LIMIT_FPS = true;
 
     Input input = new Input(scale);
     Thread gameThread;
-
-    // Set player's default psoition
-    int playerX = 100, playerY = 100;
-    int playerSpeed = 4;
+    Player player = new Player(this, input);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -43,8 +43,6 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
     }
-
-    int fps = 0;
 
     @Override
     public void run() {
@@ -65,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             lastTime = currentTime;
 
-            if (delta >= 1) {
+            if (delta >= 1 || !LIMIT_FPS) {
                 update();
                 repaint();
                 delta--;
@@ -81,18 +79,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        if (input.isKey(KeyEvent.VK_W)) {
-            playerY -= playerSpeed;
-        }
-        if (input.isKey(KeyEvent.VK_S)) {
-            playerY += playerSpeed;
-        }
-        if (input.isKey(KeyEvent.VK_A)) {
-            playerX -= playerSpeed;
-        }
-        if (input.isKey(KeyEvent.VK_D)) {
-            playerX += playerSpeed;
-        }
+        player.update();
     }
 
     @Override
@@ -101,10 +88,12 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2D = (Graphics2D) g;
 
-        g2D.setColor(Color.WHITE);
-
-        g2D.fillRect(playerX, playerY, tileSize, tileSize);
+        player.draw(g2D);
 
         g2D.dispose();
+    }
+
+    public int getTileSize() {
+        return tileSize;
     }
 }

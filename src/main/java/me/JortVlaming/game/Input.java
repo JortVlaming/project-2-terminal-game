@@ -1,4 +1,4 @@
-package me.JortVlaming;
+package me.JortVlaming.game;
 
 import java.awt.event.*;
 
