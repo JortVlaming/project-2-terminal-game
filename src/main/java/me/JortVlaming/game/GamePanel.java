@@ -1,6 +1,8 @@
 package me.JortVlaming.game;
 
 import me.JortVlaming.entity.Player;
+import me.JortVlaming.tile.TileManager;
+import me.JortVlaming.tile.TileMap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     Input input = new Input(scale);
     Thread gameThread;
     Player player = new Player(this, input);
+    TileManager tileManager = new TileManager(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -88,6 +91,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2D = (Graphics2D) g;
 
+        tileManager.drawAll(g2D);
+
         player.draw(g2D);
 
         g2D.dispose();
@@ -95,5 +100,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     public int getTileSize() {
         return tileSize;
+    }
+
+    public int getMaxScreenCol() {
+        return maxScreenCol;
+    }
+
+    public int getMaxScreenRow() {
+        return maxScreenRow;
     }
 }
