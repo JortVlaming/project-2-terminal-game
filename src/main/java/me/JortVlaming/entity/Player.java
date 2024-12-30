@@ -22,6 +22,8 @@ public class Player extends Entity{
         this.reset();
         screenX = gp.getScreenWidth()/2-gp.getTileSize()/2;
         screenY = gp.getScreenHeight()/2-gp.getTileSize()/2;
+
+        solidArea = new Rectangle(12, 24, 40, 40);
     }
 
     int normalSpeed = 4;
@@ -58,23 +60,44 @@ public class Player extends Entity{
 
         if (i.isKey(KeyEvent.VK_W)) {
             direction = 0;
-            worldY -= speed;
             moved = true;
         }
         if (i.isKey(KeyEvent.VK_S)) {
             direction = 2;
-            worldY += speed;
             moved = true;
         }
         if (i.isKey(KeyEvent.VK_A)) {
             direction = 3;
-            worldX -= speed;
             moved = true;
         }
         if (i.isKey(KeyEvent.VK_D)) {
             direction = 1;
-            worldX += speed;
             moved = true;
+        }
+
+        collisionOn = false;
+        gp.getCollisionChecker().checkTile(this);
+
+        if (moved && !collisionOn) {
+            switch (direction) {
+                case 0:
+                default: {
+                    worldY -= speed;
+                    break;
+                }
+                case 1: {
+                    worldX += speed;
+                    break;
+                }
+                case 2: {
+                    worldY += speed;
+                    break;
+                }
+                case 3: {
+                    worldX -= speed;
+                    break;
+                }
+            }
         }
 
         if (moved) {
@@ -111,5 +134,6 @@ public class Player extends Entity{
         }
 
         g2D.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+        g2D.fillRect(screenX+solidArea.x, screenY+solidArea.y, solidArea.width, solidArea.height);
     }
 }

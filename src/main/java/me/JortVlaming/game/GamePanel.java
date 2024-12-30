@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     Player player = new Player(this, input);
     TileManager tileManager = new TileManager(this);
+    CollisionChecker collisionChecker = new CollisionChecker(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -134,5 +135,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public CollisionChecker getCollisionChecker() {
+        return collisionChecker;
     }
 }

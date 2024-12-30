@@ -12,6 +12,8 @@ public abstract class Entity {
 
     public int spriteCounter = 0;
     public int spriteNum = 1;
+    public Rectangle solidArea;
+    public boolean collisionOn;
 
     public abstract void update();
 
