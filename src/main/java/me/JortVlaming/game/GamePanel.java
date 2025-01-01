@@ -116,6 +116,8 @@ public class GamePanel extends JPanel implements Runnable {
         g2D.dispose();
     }
 
+    //<editor-fold desc="getters and such">
+
     public int getTileSize() {
         return tileSize;
     }
@@ -159,4 +161,6 @@ public class GamePanel extends JPanel implements Runnable {
     public SuperObject[] getObjects() {
         return objects;
     }
+
+    //</editor-fold>
 }
