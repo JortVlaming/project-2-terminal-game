@@ -1,6 +1,7 @@
 package me.JortVlaming.tile;
 
 import me.JortVlaming.game.GamePanel;
+import me.JortVlaming.game.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -134,10 +135,7 @@ public class TileManager {
             int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
             int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
 
-            if (worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().screenX &&
-                worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().screenX &&
-                worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().screenY &&
-                worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().screenY) {
+            if (Util.isOnScreen(worldX, worldY, gp)) {
                 g2D.drawImage(tiles[tileNum].image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
             }
             worldCol++;

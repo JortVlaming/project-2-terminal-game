@@ -1,6 +1,7 @@
 package me.JortVlaming.game;
 
 import me.JortVlaming.entity.Player;
+import me.JortVlaming.object.SuperObject;
 import me.JortVlaming.tile.TileManager;
 
 import javax.swing.*;
@@ -32,6 +33,8 @@ public class GamePanel extends JPanel implements Runnable {
     Player player = new Player(this, input);
     TileManager tileManager = new TileManager(this);
     CollisionChecker collisionChecker = new CollisionChecker(this);
+    SuperObject[] objects = new SuperObject[10];
+    AssetSetter aSetter = new AssetSetter(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -49,6 +52,8 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void startGameThread() {
+        aSetter.setObject();
+
         gameThread = new Thread(this);
         gameThread.start();
     }
@@ -100,6 +105,12 @@ public class GamePanel extends JPanel implements Runnable {
         //tileManager.drawAll(g2D);
         tileManager.draw(g2D);
 
+        for (SuperObject obj : objects) {
+            if (obj != null) {
+                obj.draw(g2D, this);
+            }
+        }
+
         player.draw(g2D);
 
         g2D.dispose();
@@ -143,5 +154,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public CollisionChecker getCollisionChecker() {
         return collisionChecker;
+    }
+
+    public SuperObject[] getObjects() {
+        return objects;
     }
 }

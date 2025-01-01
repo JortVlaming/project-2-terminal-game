@@ -134,6 +134,6 @@ public class Player extends Entity{
         }
 
         g2D.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
-        g2D.fillRect(screenX+solidArea.x, screenY+solidArea.y, solidArea.width, solidArea.height);
+        //g2D.fillRect(screenX+solidArea.x, screenY+solidArea.y, solidArea.width, solidArea.height);
     }
 }
