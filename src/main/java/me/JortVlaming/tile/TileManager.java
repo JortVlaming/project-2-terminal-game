@@ -52,7 +52,6 @@ public class TileManager {
                 }
                 tiles[index].image = ImageIO.read(is);
                 tiles[index].collision = tileMap.get(i).hasCollision();
-                System.out.println("Loaded tile " + index + " as " + tileMap.get(i).name());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

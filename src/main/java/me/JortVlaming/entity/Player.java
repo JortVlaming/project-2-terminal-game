@@ -2,6 +2,9 @@ package me.JortVlaming.entity;
 
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.Input;
+import me.JortVlaming.object.OBJ_Door;
+import me.JortVlaming.object.OBJ_Key;
+import me.JortVlaming.object.SuperObject;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,6 +18,8 @@ public class Player extends Entity{
 
     public final int screenX;
     public final int screenY;
+
+    int keys = 0;
 
     public Player(GamePanel gp, Input i) {
         this.gp = gp;
@@ -78,9 +83,10 @@ public class Player extends Entity{
         }
 
         collisionOn = false;
-        if (!i.isKey(KeyEvent.VK_BACK_SLASH)) {
+        if (!i.isButton(7)) {
             gp.getCollisionChecker().checkTile(this);
-            gp.getCollisionChecker().checkObject(this);
+            int objIndex = gp.getCollisionChecker().checkObject(this);
+            pickupObject(objIndex);
         }
 
         if (moved && !collisionOn) {
@@ -112,6 +118,32 @@ public class Player extends Entity{
                 spriteCounter = 0;
             }
         }
+    }
+
+    public void pickupObject(int i) {
+        if (i < 0 || i > gp.getObjects().length) return;
+
+        boolean destroy = true;
+
+        SuperObject so = gp.getObjects()[i];
+
+        if (so instanceof OBJ_Key) {
+            keys++;
+            System.out.println("Picked up a key!");
+        }
+
+        if (so instanceof OBJ_Door) {
+            if (keys >= 1) {
+                keys--;
+                System.out.println("Opened a door! (" + keys + " keys left)");
+            } else {
+                destroy = false;
+                System.out.println("No keys left to open a door!");
+            }
+        }
+
+        if (destroy)
+            gp.getObjects()[i] = null;
     }
 
     @Override
