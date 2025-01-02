@@ -19,7 +19,7 @@ public class CollisionChecker {
         int entityLeftCol = entityLeftWorldX / gp.getTileSize();
         int entityRightCol = entityRightWorldX / gp.getTileSize();
         int entityTopRow = entityTopWorldY / gp.getTileSize();
-        int entityBottomRow = entityBottomWorldY / gp.getTileSize();
+        int entityBottomRow;
 
         int tileNum1, tileNum2;
 
@@ -71,6 +71,7 @@ public class CollisionChecker {
 
         for (int i = 0; i < gp.objects.length; i++) {
             if (gp.objects[i] != null) {
+                if (!Util.isOnScreen(gp.objects[i].worldX, gp.objects[i].worldY, gp)) continue;
                 // Get entity's solid area position
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;
                 entity.solidArea.y = entity.worldY + entity.solidArea.y;

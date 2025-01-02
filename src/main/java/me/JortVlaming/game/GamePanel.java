@@ -25,6 +25,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     // GAMELOOP SETTINGS
     boolean running = false;
+    boolean update_player = true;
     final int TARGET_FPS = 60;
     final boolean LIMIT_FPS = true;
 
@@ -37,6 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
     AssetSetter aSetter = new AssetSetter(this);
     Sound music = new Sound();
     Sound effects = new Sound();
+    GUI GUI;
 
     public GamePanel() {
         instance = this;
@@ -50,6 +52,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.addMouseWheelListener(input);
 
         this.setFocusable(true);
+
+        GUI = new GUI(this);
 
         tileManager.loadMap("test");
     }
@@ -72,7 +76,6 @@ public class GamePanel extends JPanel implements Runnable {
         long lastTime = System.nanoTime();
         long currentTime;
         long timer = 0;
-        int drawCount = 0;
 
         while (running) {
             currentTime = System.nanoTime();
@@ -86,19 +89,20 @@ public class GamePanel extends JPanel implements Runnable {
                 update();
                 repaint();
                 delta--;
-                drawCount++;
             }
 
             if (timer >= 1000000000) {
-                drawCount = 0;
                 timer = 0;
             }
         }
+
+        System.exit(0);
     }
 
     public void update() {
         input.update();
-        player.update();
+        if (update_player)
+            player.update();
     }
 
     @Override
@@ -117,6 +121,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2D);
+
+        GUI.draw(g2D);
 
         g2D.dispose();
     }
@@ -140,14 +146,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public int getTileSize() {
         return tileSize;
-    }
-
-    public int getMaxScreenCol() {
-        return maxScreenCol;
-    }
-
-    public int getMaxScreenRow() {
-        return maxScreenRow;
     }
 
     public int getScreenWidth() {
@@ -180,6 +178,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     public SuperObject[] getObjects() {
         return objects;
+    }
+
+    public GUI getGUI() {
+        return GUI;
     }
 
     //</editor-fold>
