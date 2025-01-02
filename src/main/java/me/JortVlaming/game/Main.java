@@ -21,6 +21,9 @@ public class Main {
             if (s.equalsIgnoreCase("--no-collisions")) {
                 GamePanel.CHECK_COLLISION = false;
             }
+            if (s.equalsIgnoreCase("--no-objects")) {
+                GamePanel.DO_OBJECTS = false;
+            }
         }
 
         panel.startGameThread();
