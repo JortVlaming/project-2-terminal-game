@@ -14,6 +14,8 @@ public class SuperObject {
     public String name;
     public boolean collision = false;
     public int worldX, worldY;
+    public Rectangle solidArea;
+    public int solidAreaDefaultX, solidAreaDefaultY;
 
     public SuperObject(String name, String imageName) {
         this.name = name;
@@ -29,6 +31,8 @@ public class SuperObject {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        solidArea = new Rectangle(0, 0, GamePanel.getInstance().getTileSize(), GamePanel.getInstance().getTileSize());
     }
 
     public void draw(Graphics2D g2D, GamePanel gp) {

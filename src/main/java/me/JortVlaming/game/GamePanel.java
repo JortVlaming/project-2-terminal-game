@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
+    public static GamePanel instance = null;
 
     // SCREEN SETTINGS
     final int originalTileSize = 16; // 16x16 tile
@@ -37,6 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
     AssetSetter aSetter = new AssetSetter(this);
 
     public GamePanel() {
+        instance = this;
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
@@ -93,6 +95,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        input.update();
         player.update();
     }
 
@@ -163,4 +166,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     //</editor-fold>
+
+
+    public static GamePanel getInstance() {
+        return instance;
+    }
 }

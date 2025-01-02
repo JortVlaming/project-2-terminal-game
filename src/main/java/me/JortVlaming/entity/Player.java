@@ -24,6 +24,8 @@ public class Player extends Entity{
         screenY = gp.getScreenHeight()/2-gp.getTileSize()/2;
 
         solidArea = new Rectangle(12, 24, 40, 40);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
     }
 
     int normalSpeed = 4;
@@ -76,7 +78,10 @@ public class Player extends Entity{
         }
 
         collisionOn = false;
-        gp.getCollisionChecker().checkTile(this);
+        if (!i.isKey(KeyEvent.VK_BACK_SLASH)) {
+            gp.getCollisionChecker().checkTile(this);
+            gp.getCollisionChecker().checkObject(this);
+        }
 
         if (moved && !collisionOn) {
             switch (direction) {
