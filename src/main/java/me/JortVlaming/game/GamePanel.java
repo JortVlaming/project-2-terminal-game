@@ -9,6 +9,7 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
     public static GamePanel instance = null;
+    public static boolean CHECK_COLLISION = true;
 
     // SCREEN SETTINGS
     final int originalTileSize = 16; // 16x16 tile

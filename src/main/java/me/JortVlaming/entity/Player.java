@@ -97,7 +97,7 @@ public class Player extends Entity{
         }
 
         collisionOn = false;
-        if (!i.isButton(7)) {
+        if (!i.isButton(7) && GamePanel.CHECK_COLLISION) {
             gp.getCollisionChecker().checkTile(this);
             int objIndex = gp.getCollisionChecker().checkObject(this);
             pickupObject(objIndex);

@@ -17,6 +17,12 @@ public class Main {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
+        for (String s : args) {
+            if (s.equalsIgnoreCase("--no-collisions")) {
+                GamePanel.CHECK_COLLISION = false;
+            }
+        }
+
         panel.startGameThread();
     }
 }
