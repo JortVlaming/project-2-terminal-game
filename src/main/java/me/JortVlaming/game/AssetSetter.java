@@ -1,8 +1,6 @@
 package me.JortVlaming.game;
 
-import me.JortVlaming.object.OBJ_Chest;
-import me.JortVlaming.object.OBJ_Door;
-import me.JortVlaming.object.OBJ_Key;
+import me.JortVlaming.object.*;
 
 public class AssetSetter {
     GamePanel gp;
@@ -39,5 +37,9 @@ public class AssetSetter {
         gp.getObjects()[6] = new OBJ_Chest();
         gp.getObjects()[6].worldX = 10 * gp.getTileSize();
         gp.getObjects()[6].worldY = 7 * gp.getTileSize();
+
+        gp.getObjects()[7] = new OBJ_Boots();
+        gp.getObjects()[7].worldX = 37 * gp.getTileSize();
+        gp.getObjects()[7].worldY = 42 * gp.getTileSize();
     }
 }

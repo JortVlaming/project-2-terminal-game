@@ -2,6 +2,7 @@ package me.JortVlaming.entity;
 
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.Input;
+import me.JortVlaming.object.OBJ_Boots;
 import me.JortVlaming.object.OBJ_Door;
 import me.JortVlaming.object.OBJ_Key;
 import me.JortVlaming.object.SuperObject;
@@ -140,6 +141,12 @@ public class Player extends Entity{
                 destroy = false;
                 System.out.println("No keys left to open a door!");
             }
+        }
+
+        if (so instanceof OBJ_Boots) {
+            normalSpeed = (int) (normalSpeed * 1.5);
+            speed = normalSpeed;
+            System.out.println("Picked up boots! (Normal speed increased by 50%)");
         }
 
         if (destroy)
