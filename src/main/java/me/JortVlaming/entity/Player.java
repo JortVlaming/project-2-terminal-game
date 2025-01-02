@@ -2,10 +2,8 @@ package me.JortVlaming.entity;
 
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.Input;
-import me.JortVlaming.object.OBJ_Boots;
-import me.JortVlaming.object.OBJ_Door;
-import me.JortVlaming.object.OBJ_Key;
-import me.JortVlaming.object.SuperObject;
+import me.JortVlaming.game.Sound;
+import me.JortVlaming.object.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -130,12 +128,14 @@ public class Player extends Entity{
 
         if (so instanceof OBJ_Key) {
             keys++;
+            gp.playSE(Sound.Clips.COIN);
             System.out.println("Picked up a key!");
         }
 
         if (so instanceof OBJ_Door) {
             if (keys >= 1) {
                 keys--;
+                gp.playSE(Sound.Clips.UNLOCK);
                 System.out.println("Opened a door! (" + keys + " keys left)");
             } else {
                 destroy = false;
@@ -146,7 +146,12 @@ public class Player extends Entity{
         if (so instanceof OBJ_Boots) {
             normalSpeed = (int) (normalSpeed * 1.5);
             speed = normalSpeed;
+            gp.playSE(Sound.Clips.POWERUP);
             System.out.println("Picked up boots! (Normal speed increased by 50%)");
+        }
+
+        if (so instanceof OBJ_Chest) {
+            gp.playSE(Sound.Clips.FANFARE);
         }
 
         if (destroy)

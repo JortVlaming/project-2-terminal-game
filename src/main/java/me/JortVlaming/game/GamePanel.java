@@ -22,7 +22,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     // WORLD SETTINGS
     final int maxWorldCol = 50, maxWorldRow = 50;
-    final int worldWith = tileSize * maxWorldCol, worldHeight = tileSize * maxWorldRow;
 
     // GAMELOOP SETTINGS
     boolean running = false;
@@ -36,6 +35,8 @@ public class GamePanel extends JPanel implements Runnable {
     CollisionChecker collisionChecker = new CollisionChecker(this);
     SuperObject[] objects = new SuperObject[10];
     AssetSetter aSetter = new AssetSetter(this);
+    Sound music = new Sound();
+    Sound effects = new Sound();
 
     public GamePanel() {
         instance = this;
@@ -55,6 +56,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void startGameThread() {
         aSetter.setObject();
+
+        playMusic(Sound.Clips.BLUEBOYADVENTURE);
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -116,6 +119,21 @@ public class GamePanel extends JPanel implements Runnable {
         player.draw(g2D);
 
         g2D.dispose();
+    }
+
+    public void playMusic(Sound.Clips clips) {
+        music.setFile(clips.index);
+        music.play();
+        music.loop();
+    }
+
+    public void stopMusic() {
+        music.stop();
+    }
+
+    public void playSE(Sound.Clips clips) {
+        effects.setFile(clips.index);
+        effects.play();
     }
 
     //<editor-fold desc="getters and such">
