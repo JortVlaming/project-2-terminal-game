@@ -60,7 +60,7 @@ public class GamePanel extends JPanel implements Runnable {
         objectManager = new ObjectManager(this);
         GUI = new GUI(this);
 
-        tileManager.loadMap("test");
+        tileManager.loadMap_csv("test");
     }
 
     public void startGameThread() {

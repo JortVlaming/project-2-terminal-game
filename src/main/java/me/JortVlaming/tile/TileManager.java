@@ -65,7 +65,8 @@ public class TileManager {
         }
     }
 
-    public void loadMap(String map) {
+    @Deprecated
+    public void loadMap_txt(String map) {
         try {
             InputStream is = getClass().getResourceAsStream("/worlds/" + map + ".txt");
 
@@ -90,6 +91,64 @@ public class TileManager {
                 }
 
                 String[] nums = line.split(" ");
+
+                while (col < gp.getMaxWorldCol()) {
+                    int num = 0; // Default to tile index 0
+                    if (col < nums.length) {
+                        try {
+                            num = Integer.parseInt(nums[col]);
+                            if (num >= tiles.length || num < 0) {
+                                System.err.println("Invalid tile index " + num + " at position (" + col + ", " + row + "). Defaulting to 0.");
+                                num = 0;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.err.println("Invalid number format at column " + col + ", row " + row + ". Defaulting to 0.");
+                            num = 0;
+                        }
+                    }
+
+                    mapTileNum[col][row] = num;
+                    col++;
+                }
+
+                if (col == gp.getMaxWorldCol()) {
+                    col = 0;
+                    row++;
+                }
+            }
+
+            br.close();
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadMap_csv(String map) {
+        try {
+            InputStream is = getClass().getResourceAsStream("/worlds/" + map + "/" + map + "_World.csv");
+
+            if (is == null) {
+                System.out.println("Map " + map + " does not exist!");
+                return;
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            int col = 0, row = 0;
+
+            while (row < gp.getMaxWorldRow()) {
+                String line = br.readLine();
+
+                if (line == null) {
+                    System.out.println("Reached end of map file before filling the map. Filling remaining rows with default tiles.");
+                    for (int fillRow = row; fillRow < gp.getMaxWorldRow(); fillRow++) {
+                        Arrays.fill(mapTileNum[fillRow], 0);
+                    }
+                    break;
+                }
+
+                String[] nums = line.split(",");
 
                 while (col < gp.getMaxWorldCol()) {
                     int num = 0; // Default to tile index 0
