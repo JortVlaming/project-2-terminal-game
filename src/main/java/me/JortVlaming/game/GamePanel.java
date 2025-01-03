@@ -1,6 +1,7 @@
 package me.JortVlaming.game;
 
 import me.JortVlaming.entity.Player;
+import me.JortVlaming.object.ObjectManager;
 import me.JortVlaming.object.SuperObject;
 import me.JortVlaming.tile.TileManager;
 
@@ -9,6 +10,8 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
     public static GamePanel instance = null;
+    public static boolean CHECK_COLLISION = true;
+    public static boolean DO_OBJECTS = true;
 
     // SCREEN SETTINGS
     final int originalTileSize = 16; // 16x16 tile
@@ -35,6 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager tileManager = new TileManager(this);
     CollisionChecker collisionChecker = new CollisionChecker(this);
     SuperObject[] objects = new SuperObject[10];
+    ObjectManager objectManager;
     AssetSetter aSetter = new AssetSetter(this);
     Sound music = new Sound();
     Sound effects = new Sound();
@@ -53,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         this.setFocusable(true);
 
+        objectManager = new ObjectManager(this);
         GUI = new GUI(this);
 
         tileManager.loadMap("test");
@@ -114,11 +119,8 @@ public class GamePanel extends JPanel implements Runnable {
         //tileManager.drawAll(g2D);
         tileManager.draw(g2D);
 
-        for (SuperObject obj : objects) {
-            if (obj != null) {
-                obj.draw(g2D, this);
-            }
-        }
+        if (DO_OBJECTS)
+            objectManager.draw(g2D);
 
         player.draw(g2D);
 
@@ -189,5 +191,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public static GamePanel getInstance() {
         return instance;
+    }
+
+    public ObjectManager getObjectManager() {
+        return objectManager;
     }
 }

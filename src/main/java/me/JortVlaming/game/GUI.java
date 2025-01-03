@@ -1,6 +1,6 @@
 package me.JortVlaming.game;
 
-import me.JortVlaming.object.OBJ_Key;
+import me.JortVlaming.object.ObjectMap;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -28,7 +28,7 @@ public class GUI {
         font = new Font("Arial", Font.PLAIN, 32);
         bold = new Font("Arial", Font.BOLD, 32);
         bold_80 = new Font("Arial", Font.BOLD, 80);
-        keyImage = new OBJ_Key().image;
+        keyImage = gp.objectManager.getObjectImage(ObjectMap.KEY);
     }
 
     public void showMessage(Message message) {

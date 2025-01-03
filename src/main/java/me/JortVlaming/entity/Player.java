@@ -97,7 +97,7 @@ public class Player extends Entity{
         }
 
         collisionOn = false;
-        if (!i.isButton(7)) {
+        if (!i.isButton(7) && GamePanel.CHECK_COLLISION) {
             gp.getCollisionChecker().checkTile(this);
             int objIndex = gp.getCollisionChecker().checkObject(this);
             pickupObject(objIndex);
@@ -135,46 +135,49 @@ public class Player extends Entity{
     }
 
     public void pickupObject(int i) {
-        if (i < 0 || i > gp.getObjects().length) return;
+        if (i < 0 || i > gp.getObjectManager().getActiveObjects().size()) return;
 
         boolean destroy = true;
 
-        SuperObject so = gp.getObjects()[i];
+        SuperObject so = gp.getObjectManager().getActiveObjects().get(i);
 
-        if (so instanceof OBJ_Key) {
-            keys++;
-            gp.playSE(Sound.Clips.COIN);
-            gp.getGUI().showMessage(new GUI.Message("Picked up a key!", 2500));
-        }
-
-        if (so instanceof OBJ_Door) {
-            if (keys >= 1) {
-                keys--;
-                gp.playSE(Sound.Clips.UNLOCK);
-                gp.getGUI().showMessage(new GUI.Message("Opened a door!", 2500));
-            } else {
+        switch (so.name) {
+            case "key": {
+                keys++;
+                gp.playSE(Sound.Clips.COIN);
+                gp.getGUI().showMessage(new GUI.Message("Picked up a key!", 2500));
+                break;
+            }
+            case "door": {
+                if (keys >= 1) {
+                    keys--;
+                    gp.playSE(Sound.Clips.UNLOCK);
+                    gp.getGUI().showMessage(new GUI.Message("Opened a door!", 2500));
+                } else {
+                    destroy = false;
+                    if (!gp.getGUI().hasNeedKeyMessage())
+                        gp.getGUI().showMessage(new GUI.NeedKeyMessage("You need a key!", 2500));
+                }
+                break;
+            }
+            case "boots": {
+                normalSpeed = (int) (normalSpeed * 1.5);
+                speed = normalSpeed;
+                gp.playSE(Sound.Clips.POWERUP);
+                gp.getGUI().showMessage(new GUI.Message("Picked up boots! (Speed increased by 50%)", 2500));
+                break;
+            }
+            case "chest": {
+                gp.stopMusic();
+                gp.playSE(Sound.Clips.FANFARE);
+                gp.getGUI().gameFinished = true;
                 destroy = false;
-                if (!gp.getGUI().hasNeedKeyMessage())
-                    gp.getGUI().showMessage(new GUI.NeedKeyMessage("You need a key!", 2500));
+                break;
             }
         }
 
-        if (so instanceof OBJ_Boots) {
-            normalSpeed = (int) (normalSpeed * 1.5);
-            speed = normalSpeed;
-            gp.playSE(Sound.Clips.POWERUP);
-            gp.getGUI().showMessage(new GUI.Message("Picked up boots! (Speed increased by 50%)", 2500));
-        }
-
-        if (so instanceof OBJ_Chest) {
-            gp.stopMusic();
-            gp.playSE(Sound.Clips.FANFARE);
-            gp.getGUI().gameFinished = true;
-            destroy = false;
-        }
-
         if (destroy)
-            gp.getObjects()[i] = null;
+            gp.getObjectManager().getActiveObjects().remove(i);
     }
 
     @Override
