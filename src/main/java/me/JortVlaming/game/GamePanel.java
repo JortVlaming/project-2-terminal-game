@@ -61,10 +61,11 @@ public class GamePanel extends JPanel implements Runnable {
         GUI = new GUI(this);
 
         tileManager.loadMap_csv("test");
+        objectManager.loadObject_csv("test");
     }
 
     public void startGameThread() {
-        aSetter.setObject();
+        //aSetter.setObject();
 
         playMusic(Sound.Clips.BLUEBOYADVENTURE);
 

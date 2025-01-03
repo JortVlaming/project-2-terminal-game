@@ -5,8 +5,10 @@ import me.JortVlaming.game.Util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +75,85 @@ public class ObjectManager {
                 System.out.println("Filled empty object index " + i + " with a default object.");
             }
         }
+    }
+
+    public void loadObject_csv(String map) {
+        try {
+            InputStream is = getClass().getResourceAsStream("/worlds/" + map + "/" + map + "_Objects.csv");
+
+            if (is == null) {
+                System.out.println("Map " + map + " does not exist!");
+                return;
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            int col = 0, row = 0;
+
+            while (row < gp.getMaxWorldRow()) {
+                String line = br.readLine();
+
+                if (line == null) {
+                    break;
+                }
+
+                String[] nums = line.split(",");
+
+                while (col < gp.getMaxWorldCol()) {
+                    int num = 0;
+                    if (col < nums.length) {
+                        try {
+                            num = Integer.parseInt(nums[col]);
+                            if (num >= objects.length || num <= 0 && (num != 0 && num != -1)) {
+                                System.err.println("Invalid object index " + num + " at position (" + col + ", " + row + "). Defaulting to 0.");
+                                num = 0;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.err.println("Invalid number format at column " + col + ", row " + row + ". Defaulting to 0.");
+                            num = 0;
+                        }
+                    }
+
+                    ObjectMap mapOBJ = getObjectMapFromIndex(num);
+
+                    if (mapOBJ != null) {
+                        SuperObject obj = createObject(mapOBJ);
+                        obj.worldX = col * gp.getTileSize();
+                        obj.worldY = row * gp.getTileSize();
+                        activeObjects.add(obj);
+                    }
+                    col++;
+                }
+
+                if (col == gp.getMaxWorldCol()) {
+                    col = 0;
+                    row++;
+                }
+            }
+
+            br.close();
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean objectWithIndexExists(int index) {
+        for (ObjectMap objectMap : ObjectMap.values()) {
+            if (objectMap.getIndex() == index) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ObjectMap getObjectMapFromIndex(int index) {
+        for (ObjectMap objectMap : ObjectMap.values()) {
+            if (objectMap.getIndex() == index) {
+                return objectMap;
+            }
+        }
+        return null;
     }
 
     public SuperObject getObject(ObjectMap objectMap) {

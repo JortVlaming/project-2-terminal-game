@@ -2,6 +2,7 @@ package me.JortVlaming.game;
 
 import me.JortVlaming.object.*;
 
+@Deprecated
 public class AssetSetter {
     GamePanel gp;
 
