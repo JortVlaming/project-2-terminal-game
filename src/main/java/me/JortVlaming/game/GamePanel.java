@@ -6,6 +6,9 @@ import me.JortVlaming.tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 
 public class GamePanel extends JPanel implements Runnable {
     public static GamePanel instance = null;
@@ -31,6 +34,9 @@ public class GamePanel extends JPanel implements Runnable {
     final int TARGET_FPS = 60;
     final boolean LIMIT_FPS = true;
 
+    public GameState currentState;
+
+    // SYSTEMS
     Input input = new Input(scale);
     Thread gameThread;
     Player player = new Player(this, input);
@@ -54,6 +60,20 @@ public class GamePanel extends JPanel implements Runnable {
 
         this.setFocusable(true);
 
+        this.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                System.out.println("GamePanel has focus.");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                System.out.println("GamePanel lost focus.");
+            }
+        });
+
+        this.requestFocusInWindow();
+
         objectManager = new ObjectManager(this);
         GUI = new GUI(this);
 
@@ -65,6 +85,8 @@ public class GamePanel extends JPanel implements Runnable {
         //aSetter.setObject();
 
         playMusic(Sound.Clips.BLUEBOYADVENTURE);
+
+        currentState = GameState.PLAYING;
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -103,8 +125,16 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        if (input.isKeyDown(KeyEvent.VK_P) || input.isKeyDown(KeyEvent.VK_ESCAPE)) {
+            System.out.println("TOGGLE PAUSE");
+            if (currentState == GameState.PLAYING)
+                currentState = GameState.PAUSED;
+            else if (currentState == GameState.PAUSED)
+                currentState = GameState.PLAYING;
+        }
         input.update();
-        if (update_player)
+
+        if (currentState == GameState.PLAYING)
             player.update();
     }
 

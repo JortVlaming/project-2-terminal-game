@@ -103,7 +103,7 @@ public class ObjectManager {
                     if (col < nums.length) {
                         try {
                             num = Integer.parseInt(nums[col]);
-                            if (num >= objects.length || num <= 0 && (num != 0 && num != -1) || !objectWithIndexExists(num) ) {
+                            if (num >= objects.length || num <= 0 && (num != 0 && num != -1) && !objectWithIndexExists(num) ) {
                                 System.err.println("Invalid object index " + num + " at position (" + col + ", " + row + "). Defaulting to 0.");
                                 num = 0;
                             }

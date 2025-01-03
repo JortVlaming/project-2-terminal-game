@@ -1,9 +1,6 @@
 package me.JortVlaming.entity;
 
-import me.JortVlaming.game.GUI;
-import me.JortVlaming.game.GamePanel;
-import me.JortVlaming.game.Input;
-import me.JortVlaming.game.Sound;
+import me.JortVlaming.game.*;
 import me.JortVlaming.object.*;
 import java.util.Objects;
 
@@ -19,8 +16,6 @@ public class Player extends Entity{
 
     public final int screenX;
     public final int screenY;
-
-    public int keys = 0;
 
     public Player(GamePanel gp, Input i) {
         this.gp = gp;
@@ -137,47 +132,7 @@ public class Player extends Entity{
     public void pickupObject(int i) {
         if (i < 0 || i > gp.getObjectManager().getActiveObjects().size()) return;
 
-        boolean destroy = true;
 
-        SuperObject so = gp.getObjectManager().getActiveObjects().get(i);
-
-        switch (so.name) {
-            case "key": {
-                keys++;
-                gp.playSE(Sound.Clips.COIN);
-                gp.getGUI().showMessage(new GUI.Message("Picked up a key!", 2500));
-                break;
-            }
-            case "door": {
-                if (keys >= 1) {
-                    keys--;
-                    gp.playSE(Sound.Clips.UNLOCK);
-                    gp.getGUI().showMessage(new GUI.Message("Opened a door!", 2500));
-                } else {
-                    destroy = false;
-                    if (!gp.getGUI().hasNeedKeyMessage())
-                        gp.getGUI().showMessage(new GUI.NeedKeyMessage("You need a key!", 2500));
-                }
-                break;
-            }
-            case "boots": {
-                normalSpeed = (int) (normalSpeed * 1.5);
-                speed = normalSpeed;
-                gp.playSE(Sound.Clips.POWERUP);
-                gp.getGUI().showMessage(new GUI.Message("Picked up boots! (Speed increased by 50%)", 2500));
-                break;
-            }
-            case "chest": {
-                gp.stopMusic();
-                gp.playSE(Sound.Clips.FANFARE);
-                gp.getGUI().gameFinished = true;
-                destroy = false;
-                break;
-            }
-        }
-
-        if (destroy)
-            gp.getObjectManager().getActiveObjects().remove(i);
     }
 
     @Override
