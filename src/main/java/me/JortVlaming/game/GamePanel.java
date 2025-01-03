@@ -2,7 +2,6 @@ package me.JortVlaming.game;
 
 import me.JortVlaming.entity.Player;
 import me.JortVlaming.object.ObjectManager;
-import me.JortVlaming.object.SuperObject;
 import me.JortVlaming.tile.TileManager;
 
 import javax.swing.*;

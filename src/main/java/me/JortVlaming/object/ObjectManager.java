@@ -1,7 +1,6 @@
 package me.JortVlaming.object;
 
 import me.JortVlaming.game.GamePanel;
-import me.JortVlaming.game.Util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -104,7 +103,7 @@ public class ObjectManager {
                     if (col < nums.length) {
                         try {
                             num = Integer.parseInt(nums[col]);
-                            if (num >= objects.length || num <= 0 && (num != 0 && num != -1)) {
+                            if (num >= objects.length || num <= 0 && (num != 0 && num != -1) || !objectWithIndexExists(num) ) {
                                 System.err.println("Invalid object index " + num + " at position (" + col + ", " + row + "). Defaulting to 0.");
                                 num = 0;
                             }
@@ -174,22 +173,10 @@ public class ObjectManager {
         return objects[index].clone();
     }
 
-    public void addObjectToWorld(SuperObject obj) {
-        activeObjects.add(obj);
-    }
-
-    public void clearActiveObjects() {
-        activeObjects.clear();
-    }
-
     public void draw(Graphics2D g2D) {
         for (SuperObject obj : activeObjects) {
             obj.draw(g2D, gp);
         }
-    }
-
-    public SuperObject[] getObjects() {
-        return objects;
     }
 
     public List<SuperObject> getActiveObjects() {
