@@ -26,10 +26,19 @@ public class ObjectManager {
     void loadObjectTemplates() {
         List<ObjectMap> objectMapEntries = Arrays.asList(ObjectMap.values());
 
-        objects = new SuperObject[objectMapEntries.size()+1];
+        final int[] length = {0};
 
-        for (int i = 0; i < objectMapEntries.size(); i++) {
-            ObjectMap objectMap = objectMapEntries.get(i);
+        objectMapEntries.forEach(objectMap -> {
+            if (objectMap.index > length[0]) {
+                length[0] = objectMap.index;
+            }
+        });
+
+        length[0]++;
+
+        objects = new SuperObject[length[0]];
+
+        for (ObjectMap objectMap : objectMapEntries) {
             int index = objectMap.getIndex();
 
             if (index >= objects.length) {
