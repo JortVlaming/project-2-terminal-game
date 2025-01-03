@@ -17,6 +17,8 @@ public class ObjectManager {
     SuperObject[] objects;
     List<SuperObject> activeObjects;
 
+    public static int playerStartX = 0, playerStartY = 0;
+
     public ObjectManager(GamePanel gp) {
         this.gp = gp;
         this.activeObjects = new ArrayList<>();
@@ -103,6 +105,13 @@ public class ObjectManager {
                     if (col < nums.length) {
                         try {
                             num = Integer.parseInt(nums[col]);
+                            if (num == 999) {
+                                playerStartX = col * gp.getTileSize();
+                                playerStartY = row * gp.getTileSize();
+                                System.out.println("Found player start at " + playerStartX + ", " + playerStartY);
+                                col++;
+                                continue;
+                            }
                             if (num >= objects.length || num <= 0 && (num != 0 && num != -1) && !objectWithIndexExists(num) ) {
                                 System.err.println("Invalid object index " + num + " at position (" + col + ", " + row + "). Defaulting to 0.");
                                 num = 0;

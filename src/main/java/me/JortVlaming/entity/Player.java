@@ -33,8 +33,6 @@ public class Player extends Entity{
     public static final String IMAGE_PATH = "/player/walking/";
 
     public void reset() {
-        worldX = 23 * gp.getTileSize();
-        worldY = 21 * gp.getTileSize();
         speed = 4;
 
         direction = 2;

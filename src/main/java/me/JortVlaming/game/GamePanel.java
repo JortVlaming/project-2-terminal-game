@@ -39,7 +39,7 @@ public class GamePanel extends JPanel implements Runnable {
     // SYSTEMS
     Input input = new Input(scale);
     Thread gameThread;
-    Player player = new Player(this, input);
+    Player player;
     TileManager tileManager = new TileManager(this);
     CollisionChecker collisionChecker = new CollisionChecker(this);
     ObjectManager objectManager;
@@ -60,25 +60,17 @@ public class GamePanel extends JPanel implements Runnable {
 
         this.setFocusable(true);
 
-        this.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                System.out.println("GamePanel has focus.");
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                System.out.println("GamePanel lost focus.");
-            }
-        });
-
         this.requestFocusInWindow();
 
         objectManager = new ObjectManager(this);
+        player = new Player(this, input);
         GUI = new GUI(this);
 
         tileManager.loadMap_csv("test");
         objectManager.loadObject_csv("test");
+
+        player.worldX = ObjectManager.playerStartX;
+        player.worldY = ObjectManager.playerStartY;
     }
 
     public void startGameThread() {
