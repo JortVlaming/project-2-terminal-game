@@ -37,9 +37,7 @@ public class GamePanel extends JPanel implements Runnable {
     Player player = new Player(this, input);
     TileManager tileManager = new TileManager(this);
     CollisionChecker collisionChecker = new CollisionChecker(this);
-    SuperObject[] objects = new SuperObject[10];
     ObjectManager objectManager;
-    AssetSetter aSetter = new AssetSetter(this);
     Sound music = new Sound();
     Sound effects = new Sound();
     GUI GUI;
@@ -179,22 +177,17 @@ public class GamePanel extends JPanel implements Runnable {
         return collisionChecker;
     }
 
-    public SuperObject[] getObjects() {
-        return objects;
-    }
-
     public GUI getGUI() {
         return GUI;
     }
 
+    public ObjectManager getObjectManager() {
+        return objectManager;
+    }
     //</editor-fold>
 
 
     public static GamePanel getInstance() {
         return instance;
-    }
-
-    public ObjectManager getObjectManager() {
-        return objectManager;
     }
 }
