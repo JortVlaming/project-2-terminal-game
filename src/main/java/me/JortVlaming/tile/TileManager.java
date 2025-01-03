@@ -44,7 +44,7 @@ public class TileManager {
             try {
                 InputStream is = getClass().getResourceAsStream("/tiles/" + tileMap.get(i).getFileName());
                 if (is == null) {
-                    System.out.println("Failed to load tile " + 1);
+                    System.out.println("Failed to load tile " + i);
                     if (i != 0) {
                         tiles[index] = tiles[0];
                     }
