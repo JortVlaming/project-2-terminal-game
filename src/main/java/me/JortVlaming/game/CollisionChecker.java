@@ -23,44 +23,48 @@ public class CollisionChecker {
 
         int tileNum1, tileNum2;
 
-        switch (entity.direction) {
-            case 0:
-            default: {
-                entityTopRow = (entityTopWorldY - entity.speed)/gp.getTileSize();
-                tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
-                tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
-                if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
-                    entity.collisionOn = true;
+        try {
+            switch (entity.direction) {
+                case 0:
+                default: {
+                    entityTopRow = (entityTopWorldY - entity.speed) / gp.getTileSize();
+                    tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
+                    tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
+                    if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
+                        entity.collisionOn = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case 1: {
-                entityRightCol = (entityRightWorldX + entity.speed)/gp.getTileSize();
-                tileNum1 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
-                tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
-                if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
-                    entity.collisionOn = true;
+                case 1: {
+                    entityRightCol = (entityRightWorldX + entity.speed) / gp.getTileSize();
+                    tileNum1 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
+                    tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
+                    if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
+                        entity.collisionOn = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case 2: {
-                entityBottomRow = (entityBottomWorldY + entity.speed)/gp.getTileSize();
-                tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityBottomRow];
-                tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityBottomRow];
-                if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
-                    entity.collisionOn = true;
+                case 2: {
+                    entityBottomRow = (entityBottomWorldY + entity.speed) / gp.getTileSize();
+                    tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityBottomRow];
+                    tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityBottomRow];
+                    if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
+                        entity.collisionOn = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case 3: {
-                entityLeftCol = (entityLeftWorldX - entity.speed)/gp.getTileSize();
-                tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
-                tileNum2 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
-                if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
-                    entity.collisionOn = true;
+                case 3: {
+                    entityLeftCol = (entityLeftWorldX - entity.speed) / gp.getTileSize();
+                    tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
+                    tileNum2 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
+                    if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
+                        entity.collisionOn = true;
+                    }
+                    break;
                 }
-                break;
             }
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Player outside world");
         }
     }
 

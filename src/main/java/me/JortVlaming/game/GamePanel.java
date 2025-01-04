@@ -1,5 +1,7 @@
 package me.JortVlaming.game;
 
+import me.JortVlaming.entity.Entity;
+import me.JortVlaming.entity.NPC_OldMan;
 import me.JortVlaming.entity.Player;
 import me.JortVlaming.object.ObjectManager;
 import me.JortVlaming.tile.TileManager;
@@ -9,6 +11,7 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 public class GamePanel extends JPanel implements Runnable {
     public static GamePanel instance = null;
@@ -40,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     Input input = new Input(scale);
     Thread gameThread;
     Player player;
+    Entity[] npcs = new Entity[10];
     TileManager tileManager = new TileManager(this);
     CollisionChecker collisionChecker = new CollisionChecker(this);
     ObjectManager objectManager;
@@ -66,15 +70,18 @@ public class GamePanel extends JPanel implements Runnable {
         player = new Player(this, input);
         GUI = new GUI(this);
 
-        tileManager.loadMap_csv("test");
-        objectManager.loadObject_csv("test");
+        tileManager.loadMap_csv("empty");
+        objectManager.loadObject_csv("empty");
 
         player.worldX = ObjectManager.playerStartX;
         player.worldY = ObjectManager.playerStartY;
     }
 
     public void startGameThread() {
-        //aSetter.setObject();
+        npcs[0] = new NPC_OldMan(this);
+        npcs[0].worldX = player.worldX-5*tileSize;
+        npcs[0].worldY = player.worldY-5*tileSize;
+        npcs[0].direction = 2;
 
         playMusic(Sound.Clips.BLUEBOYADVENTURE);
 
@@ -116,6 +123,8 @@ public class GamePanel extends JPanel implements Runnable {
         System.exit(0);
     }
 
+    public static boolean DEBUG = false;
+
     public void update() {
         if (input.isKeyDown(KeyEvent.VK_P) || input.isKeyDown(KeyEvent.VK_ESCAPE)) {
             System.out.println("TOGGLE PAUSE");
@@ -124,11 +133,23 @@ public class GamePanel extends JPanel implements Runnable {
             else if (currentState == GameState.PAUSED)
                 currentState = GameState.PLAYING;
         }
+
+        if (input.isKeyDown(KeyEvent.VK_F3)) {
+            DEBUG = !DEBUG;
+            if (DEBUG) {
+                System.out.println("DEBUG MODE ON");
+            } else {
+                System.out.println("DEBUG MODE OFF");
+            }
+        }
+
         input.update();
 
         if (currentState == GameState.PLAYING)
             player.update();
     }
+
+    int entityCount = 0;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -141,6 +162,15 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (DO_OBJECTS)
             objectManager.draw(g2D);
+
+        entityCount = 0;
+        for (Entity e : npcs) {
+            if (e == null) continue;
+            if (Util.isOnScreen(e.worldX, e.worldY, this)) {
+                e.draw(g2D);
+                entityCount++;
+            }
+        }
 
         player.draw(g2D);
 
@@ -210,5 +240,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public static GamePanel getInstance() {
         return instance;
+    }
+
+    public Input getInput() {
+        return input;
     }
 }

@@ -49,6 +49,12 @@ public class GUI {
             drawTextCentered(g2D, "PAUSED", 250);
         }
 
+        if (GamePanel.DEBUG) {
+            g2D.setColor(Color.WHITE);
+            g2D.setBackground(Color.GRAY);
+            g2D.drawString("E " + gp.entityCount, 5, 35);
+        }
+
         if (!messages.isEmpty()) {
             FontMetrics metrics = g2D.getFontMetrics(font);
             int textHeight = metrics.getHeight();

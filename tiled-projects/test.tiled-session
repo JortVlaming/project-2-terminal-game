@@ -3,15 +3,28 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "empty.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
+        "empty.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 584.6666666666667,
+                "y": 259.99999999999994
+            }
+        },
         "map.tsx": {
-            "dynamicWrapping": true
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 8
         },
         "objects.tsx": {
-            "dynamicWrapping": true
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 8
         },
         "overworld.json": {
             "scale": 0.8238281249999999,
@@ -38,9 +51,17 @@
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "openFiles": [
+        "map.tsx",
+        "overworld.tmx",
+        "objects.tsx",
+        "empty.tmx"
     ],
     "project": "test.tiled-project",
     "recentFiles": [
+        "map.tsx",
+        "overworld.tmx",
+        "objects.tsx",
+        "empty.tmx",
         "overworld.json"
     ],
     "tileset.lastUsedFormat": "tsx",

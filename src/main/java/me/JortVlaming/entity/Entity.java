@@ -1,9 +1,18 @@
 package me.JortVlaming.entity;
 
+import me.JortVlaming.game.GamePanel;
+import me.JortVlaming.game.Util;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
 public abstract class Entity {
+    public GamePanel gp;
     public int worldX, worldY;
     public int speed;
 
@@ -16,7 +25,72 @@ public abstract class Entity {
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn;
 
+    public Entity(GamePanel gp) {
+        this.gp = gp;
+
+        solidArea = new Rectangle(0, 0, 48, 48);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+
+        loadImages();
+    }
+
+    public abstract void loadImages();
+
     public abstract void update();
 
-    public abstract void draw(Graphics2D g2D);
+    public void incrementSpriteCounter() {
+        spriteCounter++;
+        if (spriteCounter > 15) {
+            spriteNum = spriteNum == 1 ? 2 : 1;
+            spriteCounter = 0;
+        }
+    }
+
+    public void draw(Graphics2D g2D) {
+        BufferedImage image;
+
+        switch (direction) {
+            case 0:
+            default: {
+                image = spriteNum == 1 ? up1 : up2;
+                break;
+            }
+            case 1: {
+                image = spriteNum == 1 ? right1 : right2;
+                break;
+            }
+            case 2: {
+                image = spriteNum == 1 ? down1 : down2;
+                break;
+            }
+            case 3: {
+                image = spriteNum == 1 ? left1 : left2;
+                break;
+            }
+        }
+
+        if (Util.isOnScreen(worldX, worldY, gp)) {
+            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
+            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+
+            g2D.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+
+            if (GamePanel.DEBUG) {
+                g2D.setColor(Color.RED);
+                g2D.fillRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            }
+        }
+    }
+
+    public BufferedImage loadImage(String imageName, String IMAGE_PATH) {
+        try {
+            InputStream is = getClass().getResourceAsStream(IMAGE_PATH + imageName);
+            if (is != null) return ImageIO.read(is);
+            System.out.println("Failed to load image: " + imageName + " from path: " + IMAGE_PATH);
+            return null;
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load image at path: " + IMAGE_PATH + imageName, e);
+        }
+    }
 }

@@ -10,15 +10,14 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Player extends Entity{
-    GamePanel gp;
+public class Player extends Entity {
     Input i;
 
     public final int screenX;
     public final int screenY;
 
     public Player(GamePanel gp, Input i) {
-        this.gp = gp;
+        super(gp);
         this.i = i;
         this.reset();
         screenX = gp.getScreenWidth()/2-gp.getTileSize()/2;
@@ -36,32 +35,24 @@ public class Player extends Entity{
         speed = 4;
 
         direction = 2;
-
-        loadPlayerImages();
     }
 
-    public void loadPlayerImages() {
+    @Override
+    public void loadImages() {
         try {
-            up1 = loadImage("boy_up_1.png");
-            up2 = loadImage("boy_up_2.png");
-            down1 = loadImage("boy_down_1.png");
-            down2 = loadImage("boy_down_2.png");
-            left1 = loadImage("boy_left_1.png");
-            left2 = loadImage("boy_left_2.png");
-            right1 = loadImage("boy_right_1.png");
-            right2 = loadImage("boy_right_2.png");
+            up1 = loadImage("boy_up_1.png", IMAGE_PATH);
+            up2 = loadImage("boy_up_2.png", IMAGE_PATH);
+            down1 = loadImage("boy_down_1.png", IMAGE_PATH);
+            down2 = loadImage("boy_down_2.png", IMAGE_PATH);
+            left1 = loadImage("boy_left_1.png", IMAGE_PATH);
+            left2 = loadImage("boy_left_2.png", IMAGE_PATH);
+            right1 = loadImage("boy_right_1.png", IMAGE_PATH);
+            right2 = loadImage("boy_right_2.png", IMAGE_PATH);
         } catch (RuntimeException e) {
             throw new RuntimeException("Failed to load player images: " + e.getMessage(), e);
         }
     }
 
-    public BufferedImage loadImage(String imageName) {
-        try {
-            return ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(IMAGE_PATH + imageName)));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load image at path: " + IMAGE_PATH + imageName, e);
-        }
-    }
     @Override
     public void update() {
         boolean moved = false;
@@ -119,11 +110,7 @@ public class Player extends Entity{
         }
 
         if (moved) {
-            spriteCounter++;
-            if (spriteCounter > 15) {
-                spriteNum = spriteNum == 1 ? 2 : 1;
-                spriteCounter = 0;
-            }
+            incrementSpriteCounter();
         }
     }
 
@@ -131,33 +118,5 @@ public class Player extends Entity{
         if (i < 0 || i > gp.getObjectManager().getActiveObjects().size()) return;
 
 
-    }
-
-    @Override
-    public void draw(Graphics2D g2D) {
-        BufferedImage image;
-
-        switch (direction) {
-            case 0:
-            default: {
-                image = spriteNum == 1 ? up1 : up2;
-                break;
-            }
-            case 1: {
-                image = spriteNum == 1 ? right1 : right2;
-                break;
-            }
-            case 2: {
-                image = spriteNum == 1 ? down1 : down2;
-                break;
-            }
-            case 3: {
-                image = spriteNum == 1 ? left1 : left2;
-                break;
-            }
-        }
-
-        g2D.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
-        //g2D.fillRect(screenX+solidArea.x, screenY+solidArea.y, solidArea.width, solidArea.height);
     }
 }
