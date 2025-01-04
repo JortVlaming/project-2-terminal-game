@@ -6,6 +6,7 @@ import me.JortVlaming.game.Util;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,8 @@ public abstract class Entity {
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn;
 
+    public int actionLockTimer = 0;
+
     public Entity(GamePanel gp) {
         this.gp = gp;
 
@@ -38,6 +41,7 @@ public abstract class Entity {
     public abstract void loadImages();
 
     public abstract void update();
+    public abstract void setAction();
 
     public void incrementSpriteCounter() {
         spriteCounter++;
@@ -79,6 +83,11 @@ public abstract class Entity {
             if (GamePanel.DEBUG) {
                 g2D.setColor(Color.RED);
                 g2D.fillRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+                g2D.setColor(Color.WHITE);
+                FontMetrics fm = g2D.getFontMetrics();
+                g2D.setFont(new Font("Arial", Font.PLAIN, 20));
+                Rectangle2D bounds = fm.getStringBounds(direction + "", g2D);
+                g2D.drawString(direction + "", (int) (screenX + solidArea.x + (double) solidArea.width / 2 - bounds.getWidth()/2), (int) (screenY + solidArea.y + bounds.getHeight()/2 + (double) solidArea.height / 2));
             }
         }
     }
@@ -91,6 +100,30 @@ public abstract class Entity {
             return null;
         } catch (IOException e) {
             throw new RuntimeException("Could not load image at path: " + IMAGE_PATH + imageName, e);
+        }
+    }
+
+    public void moveWithCurrentDirection() {
+        if (!collisionOn) {
+            switch (direction) {
+                case 0:
+                default: {
+                    worldY -= speed;
+                    break;
+                }
+                case 1: {
+                    worldX += speed;
+                    break;
+                }
+                case 2: {
+                    worldY += speed;
+                    break;
+                }
+                case 3: {
+                    worldX -= speed;
+                    break;
+                }
+            }
         }
     }
 }

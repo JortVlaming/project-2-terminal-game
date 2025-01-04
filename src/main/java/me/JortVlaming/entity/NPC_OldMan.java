@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Random;
 
 public class NPC_OldMan extends Entity {
     public NPC_OldMan(GamePanel gp) {
@@ -20,21 +21,13 @@ public class NPC_OldMan extends Entity {
     @Override
     public void loadImages() {
         try {
-            System.out.println("Loaded up1");
             up1 = loadImage("oldman_up_1.png", IMAGE_PATH);
-            System.out.println("Loaded up2");
             up2 = loadImage("oldman_up_2.png", IMAGE_PATH);
-            System.out.println("Loaded down1");
             down1 = loadImage("oldman_down_1.png", IMAGE_PATH);
-            System.out.println("Loaded down2");
             down2 = loadImage("oldman_down_2.png", IMAGE_PATH);
-            System.out.println("Loaded left1");
             left1 = loadImage("oldman_left_1.png", IMAGE_PATH);
-            System.out.println("Loaded left2");
             left2 = loadImage("oldman_left_2.png", IMAGE_PATH);
-            System.out.println("Loaded right1");
             right1 = loadImage("oldman_right_1.png", IMAGE_PATH);
-            System.out.println("Loaded right2");
             right2 = loadImage("oldman_right_2.png", IMAGE_PATH);
         } catch (RuntimeException e) {
             throw new RuntimeException("Failed to load oldman images: " + e.getMessage(), e);
@@ -43,6 +36,42 @@ public class NPC_OldMan extends Entity {
 
     @Override
     public void update() {
+        setAction();
+        collisionOn = false;
+        gp.getCollisionChecker().checkTile(this);
+        gp.getCollisionChecker().checkPlayer(this);
 
+        moveWithCurrentDirection();
+
+        incrementSpriteCounter();
+    }
+
+    @Override
+    public void setAction() {
+        actionLockTimer++;
+
+        if (actionLockTimer >= 90) {
+            actionLockTimer = 0;
+            Random r = new Random();
+            int i = r.nextInt(5);
+
+            switch (i) {
+                case 1: {
+                    direction = 0;
+                    break;
+                }
+                case 2: {
+                    direction = 1;
+                    break;
+                }
+                case 3: {
+                    direction = 2;
+                    break;
+                }
+                case 4: {
+                    direction = 3;
+                }
+            }
+        }
     }
 }

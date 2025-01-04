@@ -1,9 +1,6 @@
 package me.JortVlaming.game;
 
-import me.JortVlaming.object.ObjectMap;
-
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -52,7 +49,7 @@ public class GUI {
         if (GamePanel.DEBUG) {
             g2D.setColor(Color.WHITE);
             g2D.setBackground(Color.GRAY);
-            g2D.drawString("E " + gp.entityCount, 5, 35);
+            g2D.drawString("E: " + gp.entitiesDrawnCount + " / " + gp.entitiesUpdatedCount + " / " + gp.averageEntityActionLockTimer, 5, 35);
         }
 
         if (!messages.isEmpty()) {

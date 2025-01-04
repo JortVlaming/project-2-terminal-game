@@ -8,15 +8,13 @@ import me.JortVlaming.tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 
 public class GamePanel extends JPanel implements Runnable {
     public static GamePanel instance = null;
     public static boolean CHECK_COLLISION = true;
     public static boolean DO_OBJECTS = true;
+    public static boolean DO_ENTITIES = true;
 
     // SCREEN SETTINGS
     final int originalTileSize = 16; // 16x16 tile
@@ -78,10 +76,12 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void startGameThread() {
-        npcs[0] = new NPC_OldMan(this);
-        npcs[0].worldX = player.worldX-5*tileSize;
-        npcs[0].worldY = player.worldY-5*tileSize;
-        npcs[0].direction = 2;
+        if (DO_ENTITIES) {
+            npcs[0] = new NPC_OldMan(this);
+            npcs[0].worldX = player.worldX - 5 * tileSize;
+            npcs[0].worldY = player.worldY - 5 * tileSize;
+            npcs[0].direction = 2;
+        }
 
         playMusic(Sound.Clips.BLUEBOYADVENTURE);
 
@@ -145,11 +145,28 @@ public class GamePanel extends JPanel implements Runnable {
 
         input.update();
 
-        if (currentState == GameState.PLAYING)
+        if (currentState == GameState.PLAYING) {
+            if (DO_ENTITIES) {
+                entitiesUpdatedCount = 0;
+                averageEntityActionLockTimer = 0;
+                for (Entity e : npcs) {
+                    if (e == null) continue;
+                    if (Util.getDistanceFromPlayer(e.worldX, e.worldY, this) < 1000) {
+                        e.update();
+                        entitiesUpdatedCount++;
+                        averageEntityActionLockTimer += e.actionLockTimer;
+                    }
+                    averageEntityActionLockTimer /= entitiesUpdatedCount;
+                }
+            }
+
             player.update();
+        }
     }
 
-    int entityCount = 0;
+    int entitiesDrawnCount = 0;
+    int entitiesUpdatedCount = 0;
+    int averageEntityActionLockTimer = 0;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -163,12 +180,12 @@ public class GamePanel extends JPanel implements Runnable {
         if (DO_OBJECTS)
             objectManager.draw(g2D);
 
-        entityCount = 0;
+        entitiesDrawnCount = 0;
         for (Entity e : npcs) {
             if (e == null) continue;
             if (Util.isOnScreen(e.worldX, e.worldY, this)) {
                 e.draw(g2D);
-                entityCount++;
+                entitiesDrawnCount++;
             }
         }
 
@@ -244,5 +261,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public Input getInput() {
         return input;
+    }
+
+    public Entity[] getNPCs() {
+        return npcs;
     }
 }

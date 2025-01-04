@@ -7,4 +7,8 @@ public class Util {
                 worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().screenY &&
                 worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().screenY;
     }
+
+    public static int getDistanceFromPlayer(int x, int y, GamePanel gp) {
+        return (int) Math.sqrt(Math.pow(x - gp.getPlayer().worldX, 2) + Math.pow(y - gp.getPlayer().worldY, 2));
+    }
 }

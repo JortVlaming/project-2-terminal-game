@@ -76,7 +76,8 @@ public class CollisionChecker {
 
         for (int i = 0; i < gp.objectManager.getActiveObjects().size(); i++) {
             if (gp.objectManager.getActiveObjects().get(i) != null) {
-                if (!Util.isOnScreen(gp.objectManager.getActiveObjects().get(i).worldX, gp.objectManager.getActiveObjects().get(i).worldY, gp)) continue;
+                if (!Util.isOnScreen(gp.objectManager.getActiveObjects().get(i).worldX, gp.objectManager.getActiveObjects().get(i).worldY, gp))
+                    continue;
                 // Get entity's solid area position
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;
                 entity.solidArea.y = entity.worldY + entity.solidArea.y;
@@ -149,5 +150,128 @@ public class CollisionChecker {
         }
 
         return index;
+    }
+
+    public int checkEntity(Entity entity, Entity[] targets) {
+        if (!GamePanel.DO_ENTITIES) return -1;
+        int index = -1;
+
+        for (int i = 0; i < targets.length; i++) {
+            if (targets[i] != null) {
+                if (!Util.isOnScreen(targets[i].worldX, targets[i].worldY, gp)) continue;
+                // Get entity's solid area position
+                entity.solidArea.x = entity.worldX + entity.solidArea.x;
+                entity.solidArea.y = entity.worldY + entity.solidArea.y;
+
+                // Get the object's solid area position
+                targets[i].solidArea.x = targets[i].worldX + targets[i].solidArea.x;
+                targets[i].solidArea.y = targets[i].worldY + targets[i].solidArea.y;
+
+                switch (entity.direction) {
+                    default:
+                    case 0: {
+                        // omhoog
+                        entity.solidArea.y -= entity.speed;
+                        if (entity.solidArea.intersects(targets[i].solidArea)) {
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                        break;
+                    }
+                    case 1: {
+                        // rechts
+                        entity.solidArea.x += entity.speed;
+                        if (entity.solidArea.intersects(targets[i].solidArea)) {
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                        break;
+                    }
+                    case 2: {
+                        // omlaag
+                        entity.solidArea.y += entity.speed;
+                        if (entity.solidArea.intersects(targets[i].solidArea)) {
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                        break;
+                    }
+                    case 3: {
+                        // links
+                        entity.solidArea.x -= entity.speed;
+                        if (entity.solidArea.intersects(targets[i].solidArea)) {
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                        break;
+                    }
+                }
+
+                entity.solidArea.x = entity.solidAreaDefaultX;
+                entity.solidArea.y = entity.solidAreaDefaultY;
+                targets[i].solidArea.x = targets[i].solidAreaDefaultX;
+                targets[i].solidArea.y = targets[i].solidAreaDefaultY;
+            }
+        }
+
+        return index;
+    }
+
+    public void checkPlayer(Entity entity) {
+        if (!GamePanel.DO_ENTITIES) return;
+        int index = -1;
+
+        if (!Util.isOnScreen(entity.worldX, entity.worldY, gp) || Util.getDistanceFromPlayer(entity.worldX, entity.worldY, gp) > 200) return;
+
+        Player target = gp.getPlayer();
+
+        // Get entity's solid area position
+        entity.solidArea.x = entity.worldX + entity.solidArea.x;
+        entity.solidArea.y = entity.worldY + entity.solidArea.y;
+
+        // Get the object's solid area position
+        target.solidArea.x = target.worldX + target.solidArea.x;
+        target.solidArea.y = target.worldY + target.solidArea.y;
+
+        switch (entity.direction) {
+            default:
+            case 0: {
+                // omhoog
+                entity.solidArea.y -= entity.speed;
+                if (entity.solidArea.intersects(target.solidArea)) {
+                    entity.collisionOn = true;
+                }
+                break;
+            }
+            case 1: {
+                // rechts
+                entity.solidArea.x += entity.speed;
+                if (entity.solidArea.intersects(target.solidArea)) {
+                    entity.collisionOn = true;
+                }
+                break;
+            }
+            case 2: {
+                // omlaag
+                entity.solidArea.y += entity.speed;
+                if (entity.solidArea.intersects(target.solidArea)) {
+                    entity.collisionOn = true;
+                }
+                break;
+            }
+            case 3: {
+                // links
+                entity.solidArea.x -= entity.speed;
+                if (entity.solidArea.intersects(target.solidArea)) {
+                    entity.collisionOn = true;
+                }
+                break;
+            }
+        }
+
+        entity.solidArea.x = entity.solidAreaDefaultX;
+        entity.solidArea.y = entity.solidAreaDefaultY;
+        target.solidArea.x = target.solidAreaDefaultX;
+        target.solidArea.y = target.solidAreaDefaultY;
     }
 }

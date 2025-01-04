@@ -83,40 +83,32 @@ public class Player extends Entity {
         collisionOn = false;
         if (!i.isButton(7) && GamePanel.CHECK_COLLISION) {
             gp.getCollisionChecker().checkTile(this);
+
             int objIndex = gp.getCollisionChecker().checkObject(this);
             pickupObject(objIndex);
-        }
 
-        if (moved && !collisionOn) {
-            switch (direction) {
-                case 0:
-                default: {
-                    worldY -= speed;
-                    break;
-                }
-                case 1: {
-                    worldX += speed;
-                    break;
-                }
-                case 2: {
-                    worldY += speed;
-                    break;
-                }
-                case 3: {
-                    worldX -= speed;
-                    break;
-                }
-            }
+            int npcIndex = gp.getCollisionChecker().checkEntity(this, gp.getNPCs());
+            interactNPC(npcIndex);
         }
 
         if (moved) {
+            moveWithCurrentDirection();
             incrementSpriteCounter();
         }
+    }
+
+    private void interactNPC(int npcIndex) {
+
     }
 
     public void pickupObject(int i) {
         if (i < 0 || i > gp.getObjectManager().getActiveObjects().size()) return;
 
 
+    }
+
+    @Override
+    public void setAction() {
+        throw new UnsupportedOperationException("Player does not have AI capabilities");
     }
 }

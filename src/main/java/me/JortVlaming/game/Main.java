@@ -24,6 +24,9 @@ public class Main {
             if (s.equalsIgnoreCase("--no-objects")) {
                 GamePanel.DO_OBJECTS = false;
             }
+            if (s.equalsIgnoreCase("--no-entities")) {
+                GamePanel.DO_ENTITIES = false;
+            }
         }
 
         panel.startGameThread();
