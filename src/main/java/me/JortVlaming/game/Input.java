@@ -1,5 +1,6 @@
 package me.JortVlaming.game;
 
+import java.awt.*;
 import java.awt.event.*;
 
 public class Input implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener
@@ -8,7 +9,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     private boolean[] keys = new boolean[NUM_KEYS];
     private boolean[] keysLast = new boolean[NUM_KEYS];
 
-    private final int NUM_BUTTONS = 8;
+    private final int NUM_BUTTONS = MouseInfo.getNumberOfButtons();
     private boolean[] buttons = new boolean[NUM_BUTTONS];
     private boolean[] buttonsLast = new boolean[NUM_BUTTONS];
 

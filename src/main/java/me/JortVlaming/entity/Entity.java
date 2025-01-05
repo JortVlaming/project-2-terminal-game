@@ -1,6 +1,7 @@
 package me.JortVlaming.entity;
 
 import me.JortVlaming.game.GamePanel;
+import me.JortVlaming.game.GameState;
 import me.JortVlaming.game.Util;
 
 import javax.imageio.ImageIO;
@@ -42,6 +43,30 @@ public abstract class Entity {
 
     public abstract void update();
     public abstract void setAction();
+
+    public void speak() {
+        gp.currentState = GameState.DIALOGUE;
+
+        switch (gp.getPlayer().direction) {
+            default:
+            case 0: {
+                direction = 2;
+                break;
+            }
+            case 1: {
+                direction = 3;
+                break;
+            }
+            case 2: {
+                direction = 0;
+                break;
+            }
+            case 3: {
+                direction = 1;
+                break;
+            }
+        }
+    }
 
     public void incrementSpriteCounter() {
         spriteCounter++;

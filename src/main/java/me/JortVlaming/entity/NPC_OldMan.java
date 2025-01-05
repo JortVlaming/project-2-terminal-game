@@ -1,6 +1,8 @@
 package me.JortVlaming.entity;
 
+import me.JortVlaming.game.GUI;
 import me.JortVlaming.game.GamePanel;
+import me.JortVlaming.game.GameState;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -73,5 +75,18 @@ public class NPC_OldMan extends Entity {
                 }
             }
         }
+    }
+
+    @Override
+    public void speak() {
+        gp.getGUI().setCurrentDialogue(
+                new GUI.Dialogue(
+                        getClass().getSimpleName().split("_")[1])
+                        .addMessage("Lorum ipsum")
+                        .addMessage("Lorum ipsum 2")
+                        .addMessage("Lorum ipsum 3\nLorum ipsum 4")
+        );
+
+        super.speak();
     }
 }

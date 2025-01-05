@@ -126,6 +126,8 @@ public class GamePanel extends JPanel implements Runnable {
     public static boolean DEBUG = false;
 
     public void update() {
+        boolean skipPlayerThisFrame = false;
+
         if (input.isKeyDown(KeyEvent.VK_P) || input.isKeyDown(KeyEvent.VK_ESCAPE)) {
             System.out.println("TOGGLE PAUSE");
             if (currentState == GameState.PLAYING)
@@ -143,9 +145,19 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        input.update();
+        if (currentState == GameState.DIALOGUE) {
+            if (input.isKeyDown(KeyEvent.VK_SPACE)) {
+                if (!GUI.getCurrentDialogue().hasNextMessage()) {
+                    skipPlayerThisFrame = true;
+                    currentState = GameState.PLAYING;
+                    GUI.clearDialogue();
+                } else {
+                    GUI.getCurrentDialogue().nextMessage();
+                }
+            }
+        }
 
-        if (currentState == GameState.PLAYING) {
+        if (currentState == GameState.PLAYING && !skipPlayerThisFrame) {
             if (DO_ENTITIES) {
                 entitiesUpdatedCount = 0;
                 averageEntityActionLockTimer = 0;
@@ -162,6 +174,8 @@ public class GamePanel extends JPanel implements Runnable {
 
             player.update();
         }
+
+        input.update();
     }
 
     int entitiesDrawnCount = 0;

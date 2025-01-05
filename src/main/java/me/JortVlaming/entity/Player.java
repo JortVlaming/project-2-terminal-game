@@ -2,6 +2,8 @@ package me.JortVlaming.entity;
 
 import me.JortVlaming.game.*;
 import me.JortVlaming.object.*;
+
+import java.awt.event.MouseEvent;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
@@ -88,7 +90,8 @@ public class Player extends Entity {
             pickupObject(objIndex);
 
             int npcIndex = gp.getCollisionChecker().checkEntity(this, gp.getNPCs());
-            interactNPC(npcIndex);
+            if (gp.getInput().isKeyDown(KeyEvent.VK_SPACE))
+                interactNPC(npcIndex);
         }
 
         if (moved) {
@@ -98,7 +101,11 @@ public class Player extends Entity {
     }
 
     private void interactNPC(int npcIndex) {
+        if (npcIndex == -1) return;
+        if (npcIndex > gp.getNPCs().length) return;
+        if (gp.getNPCs()[npcIndex] == null) return;
 
+        gp.getNPCs()[npcIndex].speak();
     }
 
     public void pickupObject(int i) {
