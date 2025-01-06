@@ -6,9 +6,13 @@ import me.JortVlaming.entity.Player;
 import me.JortVlaming.object.ObjectManager;
 import me.JortVlaming.tile.TileManager;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class GamePanel extends JPanel implements Runnable {
     public static GamePanel instance = null;
@@ -35,7 +39,10 @@ public class GamePanel extends JPanel implements Runnable {
     final int TARGET_FPS = 60;
     final boolean LIMIT_FPS = true;
 
-    public GameState currentState;
+    public GameState currentState = GameState.TITLE_SCREEN;
+
+    // TITLE SCREEN STUFF
+    public static BufferedImage titleScreenImage;
 
     // SYSTEMS
     Input input = new Input(scale);
@@ -64,6 +71,19 @@ public class GamePanel extends JPanel implements Runnable {
 
         this.requestFocusInWindow();
 
+        InputStream titleScreenImageStream = getClass().getResourceAsStream("/title_screen_background.png");
+        if (titleScreenImageStream == null) {
+            System.out.println("Title screen image not found!");
+            titleScreenImage = null;
+        } else {
+            try {
+                titleScreenImage = ImageIO.read(titleScreenImageStream);
+            } catch (IOException e) {
+                System.out.println("Failed to load title screen image!");
+                titleScreenImage = null;
+            }
+        }
+
         objectManager = new ObjectManager(this);
         player = new Player(this, input);
         GUI = new GUI(this);
@@ -85,7 +105,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         playMusic(Sound.Clips.BLUEBOYADVENTURE);
 
-        currentState = GameState.PLAYING;
+        currentState = GameState.TITLE_SCREEN;
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -125,7 +145,26 @@ public class GamePanel extends JPanel implements Runnable {
 
     public static boolean DEBUG = false;
 
+    int timeSinceStateDrop = -1;
+
     public void update() {
+        if (timeSinceStateDrop == -1 || timeSinceStateDrop > 60 && DEBUG) {
+            System.out.println("updating with " + currentState);
+            timeSinceStateDrop = 0;
+        } else {
+            timeSinceStateDrop++;
+        }
+
+        if (currentState == GameState.TITLE_SCREEN) {
+            if (input.isKeyDown(KeyEvent.VK_SPACE)) {
+                System.out.println("Starting game...");
+                currentState = GameState.PLAYING;
+            }
+
+            input.update();
+
+            return;
+        }
         boolean skipPlayerThisFrame = false;
 
         if (input.isKeyDown(KeyEvent.VK_P) || input.isKeyDown(KeyEvent.VK_ESCAPE)) {
@@ -168,7 +207,7 @@ public class GamePanel extends JPanel implements Runnable {
                         entitiesUpdatedCount++;
                         averageEntityActionLockTimer += e.actionLockTimer;
                     }
-                    averageEntityActionLockTimer /= entitiesUpdatedCount;
+                    averageEntityActionLockTimer /= (entitiesUpdatedCount <= 0 ? 1 : entitiesUpdatedCount);
                 }
             }
 
@@ -188,24 +227,35 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2D = (Graphics2D) g;
 
-        //tileManager.drawAll(g2D);
-        tileManager.draw(g2D);
+        if (timeSinceStateDrop == -1 || timeSinceStateDrop > 60 && DEBUG)
+            System.out.println("repainting with " + currentState);
 
-        if (DO_OBJECTS)
-            objectManager.draw(g2D);
-
-        entitiesDrawnCount = 0;
-        for (Entity e : npcs) {
-            if (e == null) continue;
-            if (Util.isOnScreen(e.worldX, e.worldY, this)) {
-                e.draw(g2D);
-                entitiesDrawnCount++;
+        if (currentState == GameState.TITLE_SCREEN) {
+            if (titleScreenImage != null) {
+                g2D.drawImage(titleScreenImage, 0, 0, null);
             }
+
+            GUI.draw(g2D);
+        } else {
+            //tileManager.drawAll(g2D);
+            tileManager.draw(g2D);
+
+            if (DO_OBJECTS)
+                objectManager.draw(g2D);
+
+            entitiesDrawnCount = 0;
+            for (Entity e : npcs) {
+                if (e == null) continue;
+                if (Util.isOnScreen(e.worldX, e.worldY, this)) {
+                    e.draw(g2D);
+                    entitiesDrawnCount++;
+                }
+            }
+
+            player.draw(g2D);
+
+            GUI.draw(g2D);
         }
-
-        player.draw(g2D);
-
-        GUI.draw(g2D);
 
         g2D.dispose();
     }

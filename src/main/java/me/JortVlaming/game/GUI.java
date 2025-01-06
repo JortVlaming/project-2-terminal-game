@@ -1,6 +1,7 @@
 package me.JortVlaming.game;
 
 import java.awt.*;
+import java.awt.font.GlyphVector;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +13,17 @@ public class GUI {
 
     Font font;
     Font font_16;
+    Font font_64;
+
+    BasicStroke bStroke_0 = new BasicStroke(0f);
+    BasicStroke bStroke_2 = new BasicStroke(2.0f);
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final List<Message> messages = new ArrayList<>();
 
     private Dialogue currentDialogue;
 
-    private final String fontFileName = "Minercraftory";
+    private final String fontFileName = "MinecraftRegular-Bmg3";
 
     public GUI(GamePanel gp) {
         this.gp = gp;
@@ -27,13 +32,15 @@ public class GUI {
         if (is == null) {
             font = new Font("Arial", Font.PLAIN, 32);
             font_16 = font.deriveFont(16f);
+            font_64 = font.deriveFont(64f);
             System.err.println("Failed to load font " + fontFileName + ". Using Arial as fallback.");
             return;
         }
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, is);
-            font = font.deriveFont(Font.PLAIN, 18);
+            font = font.deriveFont(Font.PLAIN, 32);
             font_16 = font.deriveFont(16f);
+            font_64 = font.deriveFont(64f);
             is.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,6 +68,7 @@ public class GUI {
     public void draw(Graphics2D g2D) {
         g2D.setFont(font);
         g2D.setColor(Color.WHITE);
+        g2D.setStroke(bStroke_0);
 
         if (gp.currentState == GameState.PAUSED) {
             drawTextCentered(g2D, "PAUSED", 250);
@@ -91,10 +99,34 @@ public class GUI {
                     i++;
                 }
             }
-        } else if (gp.currentState == GameState.DIALOGUE) {
+        }
+
+        if (gp.currentState == GameState.DIALOGUE) {
             drawDialogueBox(g2D);
         }
+
+        if (gp.currentState == GameState.TITLE_SCREEN) {
+            g2D.setColor(Color.BLACK);
+            FontMetrics metrics = g2D.getFontMetrics(font);
+            int textWidth = metrics.stringWidth("Press space to start...");
+            int textHeight = metrics.getHeight();
+            g2D.fillRoundRect(gp.getWidth() / 2 - textWidth / 2 - 10, gp.getHeight()-(100+textHeight), textWidth + 20, textHeight + 10, 10, 10);
+
+            g2D.setColor(Color.WHITE);
+
+            g2D.drawString("Press space to start...", gp.getWidth() / 2 - textWidth / 2, gp.getHeight() - 100);
+
+            g2D.setFont(font_64);
+            g2D.setStroke(bStroke_2);
+
+            FontMetrics metrics_64 = g2D.getFontMetrics(font_64);
+            textWidth = metrics_64.stringWidth("Blue Boy Adventure");
+            textHeight = metrics_64.getHeight();
+
+            g2D.drawString("Blue Boy Adventure", gp.getWidth()/2 - textWidth/2, textHeight*2);
+        }
     }
+
 
     private void drawDialogueBox(Graphics2D g2D) {
         int x = gp.getTileSize() * 2;

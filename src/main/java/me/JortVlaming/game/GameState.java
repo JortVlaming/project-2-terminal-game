@@ -5,4 +5,5 @@ public enum GameState {
     PAUSED,
     DIALOGUE,
     GAME_OVER,
+    TITLE_SCREEN,
 }
