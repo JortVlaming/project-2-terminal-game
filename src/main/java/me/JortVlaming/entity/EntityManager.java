@@ -2,20 +2,20 @@ package me.JortVlaming.entity;
 
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.Util;
-import me.JortVlaming.object.ObjectMap;
-import me.JortVlaming.object.SuperObject;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class EntityManager {
     GamePanel gp;
 
     public List<Entity> activeEntities;
+    public List<Entity> activeNPCEntities;
 
     public int entitiesDrawnCount = 0;
     public int entitiesUpdatedCount = 0;
@@ -23,6 +23,7 @@ public class EntityManager {
 
     public EntityManager(GamePanel gp) {
         this.gp = gp;
+        activeNPCEntities = new ArrayList<>();
         activeEntities = new ArrayList<>();
     }
 
@@ -82,16 +83,25 @@ public class EntityManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        activeEntities.add(gp.getPlayer());
     }
 
     public void addEntityToWorld(Entity entity) {
+        activeNPCEntities.add(entity);
         activeEntities.add(entity);
+    }
+
+    public void removeEntityFromWorld(Entity entity) {
+        activeNPCEntities.remove(entity);
+        activeEntities.remove(entity);
     }
 
     public void updateEntities() {
         entitiesUpdatedCount = 0;
         averageEntityActionLockTimer = 0;
         for (Entity activeEntity : activeEntities) {
+            if (activeEntity instanceof Player) continue;
             if (Util.getDistanceFromPlayer(activeEntity.worldX, activeEntity.worldY, gp) < 1000) {
                 activeEntity.update();
                 entitiesUpdatedCount++;
@@ -104,6 +114,9 @@ public class EntityManager {
 
     public void drawEntities(Graphics2D g2D) {
         entitiesDrawnCount = 0;
+        activeEntities.sort((o1, o2) -> {
+            return Integer.compare(o1.worldY, o2.worldY);
+        });
         for (Entity e : activeEntities) {
             if (Util.isOnScreen(e.worldX, e.worldY, gp)) {
                 e.draw(g2D);

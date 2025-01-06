@@ -2,7 +2,6 @@ package me.JortVlaming.game;
 
 import me.JortVlaming.entity.Entity;
 import me.JortVlaming.entity.EntityManager;
-import me.JortVlaming.entity.NPC_OldMan;
 import me.JortVlaming.entity.Player;
 import me.JortVlaming.events.EventHandler;
 import me.JortVlaming.object.ObjectManager;
@@ -234,8 +233,6 @@ public class GamePanel extends JPanel implements Runnable {
 
             entityManager.drawEntities(g2D);
 
-            player.draw(g2D);
-
             GUI.draw(g2D);
         }
 
@@ -310,6 +307,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public ArrayList<Entity> getNPCs() {
-        return (ArrayList<Entity>) entityManager.activeEntities;
+        return (ArrayList<Entity>) entityManager.activeNPCEntities;
     }
 }
