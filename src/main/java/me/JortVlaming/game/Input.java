@@ -10,7 +10,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     private boolean[] keys = new boolean[NUM_KEYS];
     private boolean[] keysLast = new boolean[NUM_KEYS];
 
-    private final int NUM_BUTTONS = MouseInfo.getNumberOfButtons();
+    private int NUM_BUTTONS = MouseInfo.getNumberOfButtons();
     private boolean[] buttons = new boolean[NUM_BUTTONS];
     private boolean[] buttonsLast = new boolean[NUM_BUTTONS];
 
@@ -46,6 +46,17 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
         }
     }
 
+    private void expandButtonsCheck(int btn) {
+        if (btn > NUM_BUTTONS) {
+            NUM_BUTTONS = btn+1;
+
+            buttons = Arrays.copyOf(buttons, NUM_BUTTONS);
+            buttonsLast = Arrays.copyOf(keysLast, NUM_BUTTONS);
+
+            System.out.println("Expanded buttons array to " + NUM_BUTTONS);
+        }
+    }
+
     public boolean isKey(int code) {
         expandKeysCheck(code);
         return keys[code];
@@ -62,14 +73,17 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     }
 
     public boolean isButton(int button) {
+        expandKeysCheck(button);
         return buttons[button];
     }
 
     public boolean isButtonUp(int button) {
+        expandKeysCheck(button);
         return !buttons[button] && buttonsLast[button];
     }
 
     public boolean isButtonDown(int button) {
+        expandKeysCheck(button);
         return buttons[button] && !buttonsLast[button];
     }
 
@@ -99,11 +113,13 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 
     @Override
     public void mousePressed(MouseEvent e) {
+        expandKeysCheck(e.getButton());
         buttons[e.getButton()] = true;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        expandKeysCheck(e.getButton());
         buttons[e.getButton()] = false;
     }
 
