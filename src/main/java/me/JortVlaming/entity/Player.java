@@ -11,6 +11,8 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
+    public int frozenFor;
+
     public Player(GamePanel gp, Input i) {
         super(gp);
         this.i = i;
@@ -88,20 +90,24 @@ public class Player extends Entity {
             int npcIndex = gp.getCollisionChecker().checkEntity(this, gp.getNPCs());
             if (gp.getInput().isKeyDown(KeyEvent.VK_SPACE))
                 interactNPC(npcIndex);
+
+            gp.getCollisionChecker().checkEvents(this);
         }
 
-        if (moved) {
+        if (moved && frozenFor <= 0) {
             moveWithCurrentDirection();
             incrementSpriteCounter();
+        } else if (frozenFor > 0) {
+            frozenFor--;
         }
     }
 
     private void interactNPC(int npcIndex) {
         if (npcIndex == -1) return;
-        if (npcIndex > gp.getNPCs().length) return;
-        if (gp.getNPCs()[npcIndex] == null) return;
+        if (npcIndex > gp.getNPCs().size()) return;
+        if (gp.getNPCs().get(npcIndex) == null) return;
 
-        gp.getNPCs()[npcIndex].speak();
+        gp.getNPCs().get(npcIndex).speak();
     }
 
     public void pickupObject(int i) {

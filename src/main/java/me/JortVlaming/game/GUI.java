@@ -85,12 +85,6 @@ public class GUI {
             drawTextCentered(g2D, "PAUSED", 250);
         }
 
-        if (GamePanel.DEBUG) {
-            g2D.setColor(Color.WHITE);
-            g2D.setBackground(Color.GRAY);
-            g2D.drawString("E: " + gp.entitiesDrawnCount + " / " + gp.entitiesUpdatedCount + " / " + gp.averageEntityActionLockTimer, 5, 35);
-        }
-
         if (gp.currentState == GameState.PLAYING) {
             drawPlayerLife(g2D);
 
@@ -104,6 +98,14 @@ public class GUI {
 
         if (gp.currentState == GameState.TITLE_SCREEN) {
             drawTitleScreen(g2D);
+        }
+
+        if (GamePanel.DEBUG) {
+            g2D.setColor(Color.WHITE);
+            g2D.setBackground(Color.GRAY);
+            int height = g2D.getFontMetrics().getHeight();
+            g2D.drawString("E: " + gp.entityManager.entitiesDrawnCount + " / " + gp.entityManager.entitiesUpdatedCount + " / " + gp.entityManager.averageEntityActionLockTimer, 5, 15+height);
+            g2D.drawString("X: " + gp.getPlayer().worldX + " Y: " + gp.getPlayer().worldY, 5, 15+height+5+height);
         }
     }
 

@@ -157,4 +157,9 @@ public abstract class Entity {
             }
         }
     }
+
+    public void takeDamage(int i) {
+        life -= i;
+        // TODO death
+    }
 }

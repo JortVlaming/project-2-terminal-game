@@ -1,8 +1,10 @@
 package me.JortVlaming.game;
 
 import me.JortVlaming.entity.Entity;
+import me.JortVlaming.entity.EntityManager;
 import me.JortVlaming.entity.NPC_OldMan;
 import me.JortVlaming.entity.Player;
+import me.JortVlaming.events.EventHandler;
 import me.JortVlaming.object.ObjectManager;
 import me.JortVlaming.tile.TileManager;
 
@@ -13,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable {
     public static GamePanel instance = null;
@@ -49,13 +52,14 @@ public class GamePanel extends JPanel implements Runnable {
     Input input = new Input(scale);
     Thread gameThread;
     Player player;
-    Entity[] npcs = new Entity[10];
+    EntityManager entityManager = new EntityManager(this);
     TileManager tileManager = new TileManager(this);
     CollisionChecker collisionChecker = new CollisionChecker(this);
     ObjectManager objectManager;
     Sound music = new Sound();
     Sound effects = new Sound();
     GUI GUI;
+    EventHandler events;
 
     public GamePanel() {
         instance = this;
@@ -88,22 +92,18 @@ public class GamePanel extends JPanel implements Runnable {
         objectManager = new ObjectManager(this);
         player = new Player(this, input);
         GUI = new GUI(this);
+        events = new EventHandler(this);
 
-        tileManager.loadMap_csv("empty");
-        objectManager.loadObject_csv("empty");
+        tileManager.loadMap_csv("test");
+        objectManager.loadObject_csv("test");
+        events.loadEventsFromMap_csv("test");
+        entityManager.loadEntities_csv("test");
 
         player.worldX = ObjectManager.playerStartX;
         player.worldY = ObjectManager.playerStartY;
     }
 
     public void startGameThread() {
-        if (DO_ENTITIES) {
-            npcs[0] = new NPC_OldMan(this);
-            npcs[0].worldX = player.worldX - 5 * tileSize;
-            npcs[0].worldY = player.worldY - 5 * tileSize;
-            npcs[0].direction = 2;
-        }
-
         playMusic(Sound.Clips.BLUEBOYADVENTURE);
 
         currentState = GameState.TITLE_SCREEN;
@@ -168,7 +168,7 @@ public class GamePanel extends JPanel implements Runnable {
                 currentState = GameState.PLAYING;
         }
 
-        if ((input.isKeyDown(KeyEvent.VK_F3) && ALLOW_DEBUG) || (input.isKey(KeyEvent.VK_SHIFT) && input.isKey(KeyEvent.VK_CONTROL) && input.isKey(KeyEvent.VK_ALT) && input.isKeyDown(KeyEvent.VK_F3))) {
+        if ((input.isKeyDown(KeyEvent.VK_F3) && ALLOW_DEBUG) || (input.isKey(KeyEvent.VK_SHIFT) && input.isKey(KeyEvent.VK_CONTROL) && input.isKeyDown(KeyEvent.VK_F3))) {
             DEBUG = !DEBUG;
             if (DEBUG) {
                 System.out.println("DEBUG MODE ON");
@@ -200,17 +200,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (currentState == GameState.PLAYING && !skipPlayerThisFrame) {
             if (DO_ENTITIES) {
-                entitiesUpdatedCount = 0;
-                averageEntityActionLockTimer = 0;
-                for (Entity e : npcs) {
-                    if (e == null) continue;
-                    if (Util.getDistanceFromPlayer(e.worldX, e.worldY, this) < 1000) {
-                        e.update();
-                        entitiesUpdatedCount++;
-                        averageEntityActionLockTimer += e.actionLockTimer;
-                    }
-                    averageEntityActionLockTimer /= (entitiesUpdatedCount <= 0 ? 1 : entitiesUpdatedCount);
-                }
+                entityManager.updateEntities();
             }
 
             player.update();
@@ -219,15 +209,15 @@ public class GamePanel extends JPanel implements Runnable {
         input.update();
     }
 
-    int entitiesDrawnCount = 0;
-    int entitiesUpdatedCount = 0;
-    int averageEntityActionLockTimer = 0;
-
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2D = (Graphics2D) g;
+
+        if (DEBUG) {
+            events.draw(g2D);
+        }
 
         if (currentState == GameState.TITLE_SCREEN) {
             if (titleScreenImage != null) {
@@ -242,14 +232,7 @@ public class GamePanel extends JPanel implements Runnable {
             if (DO_OBJECTS)
                 objectManager.draw(g2D);
 
-            entitiesDrawnCount = 0;
-            for (Entity e : npcs) {
-                if (e == null) continue;
-                if (Util.isOnScreen(e.worldX, e.worldY, this)) {
-                    e.draw(g2D);
-                    entitiesDrawnCount++;
-                }
-            }
+            entityManager.drawEntities(g2D);
 
             player.draw(g2D);
 
@@ -326,7 +309,7 @@ public class GamePanel extends JPanel implements Runnable {
         return input;
     }
 
-    public Entity[] getNPCs() {
-        return npcs;
+    public ArrayList<Entity> getNPCs() {
+        return (ArrayList<Entity>) entityManager.activeEntities;
     }
 }

@@ -3,6 +3,9 @@ package me.JortVlaming.game;
 import me.JortVlaming.entity.Entity;
 import me.JortVlaming.entity.Player;
 
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+
 public class CollisionChecker {
     GamePanel gp;
 
@@ -152,27 +155,29 @@ public class CollisionChecker {
         return index;
     }
 
-    public int checkEntity(Entity entity, Entity[] targets) {
+    public int checkEntity(Entity entity, ArrayList<Entity> targets) {
         if (!GamePanel.DO_ENTITIES) return -1;
         int index = -1;
 
-        for (int i = 0; i < targets.length; i++) {
-            if (targets[i] != null) {
-                if (!Util.isOnScreen(targets[i].worldX, targets[i].worldY, gp)) continue;
+        for (int i = 0; i < targets.size(); i++) {
+            Entity target = gp.getNPCs().get(i);
+            if (entity == target) continue;
+            if (target != null) {
+                if (!Util.isOnScreen(target.worldX, target.worldY, gp)) continue;
                 // Get entity's solid area position
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;
                 entity.solidArea.y = entity.worldY + entity.solidArea.y;
 
                 // Get the object's solid area position
-                targets[i].solidArea.x = targets[i].worldX + targets[i].solidArea.x;
-                targets[i].solidArea.y = targets[i].worldY + targets[i].solidArea.y;
+                target.solidArea.x = target.worldX + target.solidArea.x;
+                target.solidArea.y = target.worldY + target.solidArea.y;
 
                 switch (entity.direction) {
                     default:
                     case 0: {
                         // omhoog
                         entity.solidArea.y -= entity.speed;
-                        if (entity.solidArea.intersects(targets[i].solidArea)) {
+                        if (entity.solidArea.intersects(target.solidArea)) {
                             entity.collisionOn = true;
                             index = i;
                         }
@@ -181,7 +186,7 @@ public class CollisionChecker {
                     case 1: {
                         // rechts
                         entity.solidArea.x += entity.speed;
-                        if (entity.solidArea.intersects(targets[i].solidArea)) {
+                        if (entity.solidArea.intersects(target.solidArea)) {
                             entity.collisionOn = true;
                             index = i;
                         }
@@ -190,7 +195,7 @@ public class CollisionChecker {
                     case 2: {
                         // omlaag
                         entity.solidArea.y += entity.speed;
-                        if (entity.solidArea.intersects(targets[i].solidArea)) {
+                        if (entity.solidArea.intersects(target.solidArea)) {
                             entity.collisionOn = true;
                             index = i;
                         }
@@ -199,7 +204,7 @@ public class CollisionChecker {
                     case 3: {
                         // links
                         entity.solidArea.x -= entity.speed;
-                        if (entity.solidArea.intersects(targets[i].solidArea)) {
+                        if (entity.solidArea.intersects(target.solidArea)) {
                             entity.collisionOn = true;
                             index = i;
                         }
@@ -209,8 +214,8 @@ public class CollisionChecker {
 
                 entity.solidArea.x = entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.solidAreaDefaultY;
-                targets[i].solidArea.x = targets[i].solidAreaDefaultX;
-                targets[i].solidArea.y = targets[i].solidAreaDefaultY;
+                target.solidArea.x = target.solidAreaDefaultX;
+                target.solidArea.y = target.solidAreaDefaultY;
             }
         }
 
@@ -273,5 +278,41 @@ public class CollisionChecker {
         entity.solidArea.y = entity.solidAreaDefaultY;
         target.solidArea.x = target.solidAreaDefaultX;
         target.solidArea.y = target.solidAreaDefaultY;
+    }
+
+    public void checkEvents(Entity entity) {
+        if (!(entity instanceof Player)) return;
+
+        int i = 0;
+
+        for (Rectangle2D pits : gp.events.getDamagePitRectangles()) {
+            if (Util.getDistanceFromPlayer(pits, gp) < 100) {
+                if (hit(pits, -1)) {
+                    gp.events.handleDamagePit(i);
+                    gp.getPlayer().frozenFor = 120;
+                }
+
+                gp.getPlayer().solidArea.x = gp.getPlayer().solidAreaDefaultX;
+                gp.getPlayer().solidArea.y = gp.getPlayer().solidAreaDefaultY;
+            }
+            i++;
+        }
+
+        gp.events.disposeMarkedForDispose();
+    }
+
+    public boolean hit(Rectangle2D col, int reqDirection) {
+        boolean hit = false;
+
+        gp.getPlayer().solidArea.x = gp.getPlayer().worldX + gp.player.solidArea.x;
+        gp.getPlayer().solidArea.y = gp.getPlayer().worldY + gp.player.solidArea.y;
+
+        if (gp.getPlayer().solidArea.intersects(col)) {
+            if (gp.getPlayer().direction == reqDirection || reqDirection == -1) {
+                hit = true;
+            }
+        }
+
+        return hit;
     }
 }

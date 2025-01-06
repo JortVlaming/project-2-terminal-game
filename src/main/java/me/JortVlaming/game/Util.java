@@ -1,6 +1,7 @@
 package me.JortVlaming.game;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class Util {
@@ -22,5 +23,13 @@ public class Util {
         g2D.dispose();
 
         return scaled;
+    }
+
+    public static boolean isOnScreen(Rectangle2D pits, GamePanel gp) {
+        return isOnScreen((int) pits.getX(), (int) pits.getY(), gp);
+    }
+
+    public static int getDistanceFromPlayer(Rectangle2D pits, GamePanel gp) {
+        return getDistanceFromPlayer((int) pits.getX(), (int) pits.getY(), gp);
     }
 }
