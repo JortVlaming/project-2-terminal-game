@@ -1,16 +1,9 @@
 package me.JortVlaming.entity;
 
 import me.JortVlaming.game.*;
-import me.JortVlaming.object.*;
 
-import java.awt.event.MouseEvent;
-import java.util.Objects;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class Player extends Entity {
     Input i;
@@ -37,6 +30,9 @@ public class Player extends Entity {
         speed = 4;
 
         direction = 2;
+
+        maxLife = 6;
+        life = maxLife;
     }
 
     @Override

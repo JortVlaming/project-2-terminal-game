@@ -2,10 +2,11 @@ package me.JortVlaming.game;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 
 public class Input implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener
 {
-    private final int NUM_KEYS = 256;
+    private int NUM_KEYS = 256;
     private boolean[] keys = new boolean[NUM_KEYS];
     private boolean[] keysLast = new boolean[NUM_KEYS];
 
@@ -34,16 +35,30 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
         System.arraycopy(buttons, 0, buttonsLast, 0, NUM_BUTTONS);
     }
 
-    public boolean isKey(int keyCode) {
-        return keys[keyCode];
+    private void expandKeysCheck(int code) {
+        if (code > NUM_KEYS) {
+            NUM_KEYS = code+1;
+
+            keys = Arrays.copyOf(keys, NUM_KEYS);
+            keysLast = Arrays.copyOf(keysLast, NUM_KEYS);
+
+            System.out.println("Expanded keys array to " + NUM_KEYS);
+        }
     }
 
-    public boolean isKeyUp(int keyCode) {
-        return !keys[keyCode] && keysLast[keyCode];
+    public boolean isKey(int code) {
+        expandKeysCheck(code);
+        return keys[code];
     }
 
-    public boolean isKeyDown(int keyCode) {
-        return keys[keyCode] && !keysLast[keyCode];
+    public boolean isKeyUp(int code) {
+        expandKeysCheck(code);
+        return !keys[code] && keysLast[code];
+    }
+
+    public boolean isKeyDown(int code) {
+        expandKeysCheck(code);
+        return keys[code] && !keysLast[code];
     }
 
     public boolean isButton(int button) {
@@ -65,12 +80,16 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 
     @Override
     public void keyPressed(KeyEvent e) {
-        keys[e.getKeyCode()] = true;
+        int code = e.getKeyCode();
+        expandKeysCheck(code);
+        keys[code] = true;
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        keys[e.getKeyCode()] = false;
+        int code = e.getKeyCode();
+        expandKeysCheck(code);
+        keys[code] = false;
     }
 
     @Override

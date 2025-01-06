@@ -1,5 +1,8 @@
 package me.JortVlaming.game;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 public class Util {
     public static boolean isOnScreen(int worldX, int worldY, GamePanel gp) {
         return worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().screenX &&
@@ -10,5 +13,14 @@ public class Util {
 
     public static int getDistanceFromPlayer(int x, int y, GamePanel gp) {
         return (int) Math.sqrt(Math.pow(x - gp.getPlayer().worldX, 2) + Math.pow(y - gp.getPlayer().worldY, 2));
+    }
+
+    public static BufferedImage scaleImage(BufferedImage original, int width, int height) {
+        BufferedImage scaled = new BufferedImage(width, height, original.getType());
+        Graphics2D g2D = scaled.createGraphics();
+        g2D.drawImage(original, 0, 0, width, height, null);
+        g2D.dispose();
+
+        return scaled;
     }
 }

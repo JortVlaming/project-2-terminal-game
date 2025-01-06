@@ -145,16 +145,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public static boolean DEBUG = false;
 
-    int timeSinceStateDrop = -1;
 
     public void update() {
-        if (timeSinceStateDrop == -1 || timeSinceStateDrop > 60 && DEBUG) {
-            System.out.println("updating with " + currentState);
-            timeSinceStateDrop = 0;
-        } else {
-            timeSinceStateDrop++;
-        }
-
         if (currentState == GameState.TITLE_SCREEN) {
             if (input.isKeyDown(KeyEvent.VK_SPACE)) {
                 System.out.println("Starting game...");
@@ -181,6 +173,15 @@ public class GamePanel extends JPanel implements Runnable {
                 System.out.println("DEBUG MODE ON");
             } else {
                 System.out.println("DEBUG MODE OFF");
+            }
+        }
+
+        if (DEBUG) {
+            if (input.isKeyDown(KeyEvent.VK_K) && player.life > 0) {
+                player.life--;
+            }
+            if (input.isKeyDown(KeyEvent.VK_L) && player.life < player.maxLife) {
+                player.life++;
             }
         }
 
@@ -226,9 +227,6 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
 
         Graphics2D g2D = (Graphics2D) g;
-
-        if (timeSinceStateDrop == -1 || timeSinceStateDrop > 60 && DEBUG)
-            System.out.println("repainting with " + currentState);
 
         if (currentState == GameState.TITLE_SCREEN) {
             if (titleScreenImage != null) {

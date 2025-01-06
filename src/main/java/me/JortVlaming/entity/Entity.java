@@ -6,28 +6,34 @@ import me.JortVlaming.game.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 
 public abstract class Entity {
+    // CONFIG STUFF
     public GamePanel gp;
     public int worldX, worldY;
     public int speed;
 
+    // SPRITE STUFF
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public int direction; // 0 = up, 1 = right, 2 = down, 3 = left
-
     public int spriteCounter = 0;
     public int spriteNum = 1;
+
+    // COLLISION STUFF
     public Rectangle solidArea;
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn;
 
+    // ACTION STUFF
     public int actionLockTimer = 0;
+
+    // CHARACTER STAT STUFF
+    public int maxLife;
+    public int life;
 
     public Entity(GamePanel gp) {
         this.gp = gp;

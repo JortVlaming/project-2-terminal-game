@@ -1,7 +1,10 @@
 package me.JortVlaming.game;
 
+import me.JortVlaming.object.ObjectMap;
+
 import java.awt.*;
 import java.awt.font.GlyphVector;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,9 @@ public class GUI {
 
     private final String fontFileName = "MinecraftRegular-Bmg3";
 
+    // Heart full, heart half, heart empty
+    BufferedImage heart_f, heart_h, heart_e;
+
     public GUI(GamePanel gp) {
         this.gp = gp;
 
@@ -45,6 +51,10 @@ public class GUI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        heart_f = Util.scaleImage(gp.objectManager.getObjectImage(ObjectMap.FULL_HEART), gp.tileSize, gp.tileSize);
+        heart_h = Util.scaleImage(gp.objectManager.getObjectImage(ObjectMap.HALF_HEART), gp.tileSize, gp.tileSize);
+        heart_e = Util.scaleImage(gp.objectManager.getObjectImage(ObjectMap.EMPTY_HEART), gp.tileSize, gp.tileSize);
     }
 
     public void showMessage(Message message) {
@@ -71,6 +81,7 @@ public class GUI {
         g2D.setStroke(bStroke_0);
 
         if (gp.currentState == GameState.PAUSED) {
+            drawPlayerLife(g2D);
             drawTextCentered(g2D, "PAUSED", 250);
         }
 
@@ -81,49 +92,90 @@ public class GUI {
         }
 
         if (gp.currentState == GameState.PLAYING) {
-            if (!messages.isEmpty()) {
-                FontMetrics metrics = g2D.getFontMetrics(font);
-                int textHeight = metrics.getHeight();
-                int i = 0;
-                for (Message message : messages) {
-                    int y = gp.getHeight() - ((i * (font.getSize() * 2))) - 50;
-                    int textWidth = metrics.stringWidth(message.text);
-                    int boxWidth = textWidth + 30;
-                    int boxHeight = textHeight + 10;
-                    int boxX = 5;
-                    int boxY = y - textHeight - 5;
-                    g2D.setColor(Color.BLACK);
-                    g2D.fillRect(boxX, boxY, boxWidth, boxHeight);
-                    g2D.setColor(Color.WHITE);
-                    g2D.drawString(message.text, boxX + 15, boxY + (boxHeight - (boxHeight - textHeight) / 2 - metrics.getDescent()));
-                    i++;
-                }
-            }
+            drawPlayerLife(g2D);
+
+            drawGUIMessages(g2D);
         }
 
         if (gp.currentState == GameState.DIALOGUE) {
+            drawPlayerLife(g2D);
             drawDialogueBox(g2D);
         }
 
         if (gp.currentState == GameState.TITLE_SCREEN) {
-            g2D.setColor(Color.BLACK);
+            drawTitleScreen(g2D);
+        }
+    }
+
+    private void drawPlayerLife(Graphics2D g2D) {
+
+        int x = gp.tileSize/2;
+        int y = gp.tileSize/2;
+
+        int i = 0;
+
+        // draw empty life canisters to render over later
+        while (i < gp.player.maxLife/2) {
+            g2D.drawImage(heart_e, x, y, null);
+            i++;
+            x += gp.tileSize;
+        }
+
+        x = gp.tileSize/2;
+        y = gp.tileSize/2;
+        i = 0;
+
+        // draw current life over empty canisters
+        while (i < gp.player.life) {
+            g2D.drawImage(heart_h, x, y, null);
+            i++;
+            if (i < gp.player.life) {
+                g2D.drawImage(heart_f, x, y, null);
+            }
+            i++;
+            x += gp.tileSize;
+        }
+    }
+
+    private void drawTitleScreen(Graphics2D g2D) {
+        g2D.setColor(Color.BLACK);
+        FontMetrics metrics = g2D.getFontMetrics(font);
+        int textWidth = metrics.stringWidth("Press space to start...");
+        int textHeight = metrics.getHeight();
+        g2D.fillRoundRect(gp.getWidth() / 2 - textWidth / 2 - 10, gp.getHeight()-(100+textHeight), textWidth + 20, textHeight + 10, 10, 10);
+
+        g2D.setColor(Color.WHITE);
+
+        g2D.drawString("Press space to start...", gp.getWidth() / 2 - textWidth / 2, gp.getHeight() - 100);
+
+        g2D.setFont(font_64);
+        g2D.setStroke(bStroke_2);
+
+        FontMetrics metrics_64 = g2D.getFontMetrics(font_64);
+        textWidth = metrics_64.stringWidth("Blue Boy Adventure");
+        textHeight = metrics_64.getHeight();
+
+        g2D.drawString("Blue Boy Adventure", gp.getWidth()/2 - textWidth/2, textHeight*2);
+    }
+
+    private void drawGUIMessages(Graphics2D g2D) {
+        if (!messages.isEmpty()) {
             FontMetrics metrics = g2D.getFontMetrics(font);
-            int textWidth = metrics.stringWidth("Press space to start...");
             int textHeight = metrics.getHeight();
-            g2D.fillRoundRect(gp.getWidth() / 2 - textWidth / 2 - 10, gp.getHeight()-(100+textHeight), textWidth + 20, textHeight + 10, 10, 10);
-
-            g2D.setColor(Color.WHITE);
-
-            g2D.drawString("Press space to start...", gp.getWidth() / 2 - textWidth / 2, gp.getHeight() - 100);
-
-            g2D.setFont(font_64);
-            g2D.setStroke(bStroke_2);
-
-            FontMetrics metrics_64 = g2D.getFontMetrics(font_64);
-            textWidth = metrics_64.stringWidth("Blue Boy Adventure");
-            textHeight = metrics_64.getHeight();
-
-            g2D.drawString("Blue Boy Adventure", gp.getWidth()/2 - textWidth/2, textHeight*2);
+            int i = 0;
+            for (Message message : messages) {
+                int y = gp.getHeight() - ((i * (font.getSize() * 2))) - 50;
+                int textWidth = metrics.stringWidth(message.text);
+                int boxWidth = textWidth + 30;
+                int boxHeight = textHeight + 10;
+                int boxX = 5;
+                int boxY = y - textHeight - 5;
+                g2D.setColor(Color.BLACK);
+                g2D.fillRect(boxX, boxY, boxWidth, boxHeight);
+                g2D.setColor(Color.WHITE);
+                g2D.drawString(message.text, boxX + 15, boxY + (boxHeight - (boxHeight - textHeight) / 2 - metrics.getDescent()));
+                i++;
+            }
         }
     }
 
@@ -169,15 +221,6 @@ public class GUI {
         g2D.drawString(text, x, y);
     }
 
-    public boolean hasNeedKeyMessage() {
-        for (Message message : messages) {
-            if (message instanceof NeedKeyMessage) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Dialogue getCurrentDialogue() {
         return currentDialogue;
     }
@@ -201,12 +244,6 @@ public class GUI {
         public Message(String text, int timeAllowedToExist) {
             this.text = text;
             this.timeAllowedToExist = timeAllowedToExist;
-        }
-    }
-
-    public static class NeedKeyMessage extends Message {
-        public NeedKeyMessage(String text, int timeAllowedToExist) {
-            super(text, timeAllowedToExist);
         }
     }
 
