@@ -3,17 +3,17 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "empty.tmx",
+    "activeFile": "objects.tsx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
         "empty.tmx": {
             "scale": 0.75,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 584.6666666666667,
-                "y": 259.99999999999994
+                "x": 563.3333333333333,
+                "y": 512.6666666666666
             }
         },
         "map.tsx": {
@@ -35,16 +35,16 @@
             }
         },
         "overworld.tmx": {
-            "scale": 1,
-            "selectedLayer": 1,
+            "scale": 3,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 398.5,
-                "y": 426
+                "x": 512,
+                "y": 384.16666666666663
             }
         }
     },
     "last.exportedFilePath": "/home/crystal/Documents/projects/school/project-2-terminal-game/src/main/resources/worlds/empty",
-    "last.imagePath": "/home/crystal/Documents/projects/school/project-2-terminal-game/src/main/resources/objects",
+    "last.imagePath": "/home/crystal/Documents/projects/school/project-2-terminal-game/src/main/resources/events",
     "map.fixedSize": false,
     "map.lastUsedExportFilter": "CSV files (*.csv)",
     "map.lastUsedFormat": "tmx",
@@ -60,8 +60,8 @@
     "recentFiles": [
         "map.tsx",
         "overworld.tmx",
-        "objects.tsx",
         "empty.tmx",
+        "objects.tsx",
         "overworld.json"
     ],
     "tileset.lastUsedFormat": "tsx",

@@ -19,6 +19,7 @@ public class GamePanel extends JPanel implements Runnable {
     public static boolean CHECK_COLLISION = true;
     public static boolean DO_OBJECTS = true;
     public static boolean DO_ENTITIES = true;
+    public static boolean ALLOW_DEBUG = false;
 
     // SCREEN SETTINGS
     final int originalTileSize = 16; // 16x16 tile
@@ -167,7 +168,7 @@ public class GamePanel extends JPanel implements Runnable {
                 currentState = GameState.PLAYING;
         }
 
-        if (input.isKeyDown(KeyEvent.VK_F3)) {
+        if ((input.isKeyDown(KeyEvent.VK_F3) && ALLOW_DEBUG) || (input.isKey(KeyEvent.VK_SHIFT) && input.isKey(KeyEvent.VK_CONTROL) && input.isKey(KeyEvent.VK_ALT) && input.isKeyDown(KeyEvent.VK_F3))) {
             DEBUG = !DEBUG;
             if (DEBUG) {
                 System.out.println("DEBUG MODE ON");

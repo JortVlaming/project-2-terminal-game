@@ -27,6 +27,9 @@ public class Main {
             if (s.equalsIgnoreCase("--no-entities")) {
                 GamePanel.DO_ENTITIES = false;
             }
+            if (s.equalsIgnoreCase("--allow-debug")) {
+                GamePanel.ALLOW_DEBUG = true;
+            }
         }
 
         panel.startGameThread();
