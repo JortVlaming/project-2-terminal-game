@@ -38,7 +38,7 @@ public abstract class Entity {
     public Entity(GamePanel gp) {
         this.gp = gp;
 
-        solidArea = new Rectangle(0, 0, 48, 48);
+        solidArea = new Rectangle(0, 0, gp.getTileSize(), gp.getTileSize());
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 

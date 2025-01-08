@@ -67,7 +67,7 @@ public class CollisionChecker {
                 }
             }
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Player outside world");
+            entity.collisionOn = true;
         }
     }
 

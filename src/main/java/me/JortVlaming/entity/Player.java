@@ -1,6 +1,8 @@
 package me.JortVlaming.entity;
 
 import me.JortVlaming.game.*;
+import me.JortVlaming.monster.HostileEntity;
+import me.JortVlaming.monster.MON_GreenSlime;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,6 +14,9 @@ public class Player extends Entity {
     public final int screenY;
 
     public int frozenFor;
+
+    public int IFrames = 0;
+    public int IFramesWhenHit = 90;
 
     public Player(GamePanel gp, Input i) {
         super(gp);
@@ -88,11 +93,12 @@ public class Player extends Entity {
             pickupObject(objIndex);
 
             int npcIndex = gp.getCollisionChecker().checkEntity(this, gp.getNPCs());
-            if (gp.getInput().isKeyDown(KeyEvent.VK_SPACE))
-                interactNPC(npcIndex);
+            interactNPC(npcIndex);
 
             gp.getCollisionChecker().checkEvents(this);
         }
+
+        if (IFrames > 0) IFrames--;
 
         if (moved && frozenFor <= 0) {
             moveWithCurrentDirection();
@@ -107,7 +113,13 @@ public class Player extends Entity {
         if (npcIndex > gp.getNPCs().size()) return;
         if (gp.getNPCs().get(npcIndex) == null) return;
 
-        gp.getNPCs().get(npcIndex).speak();
+        Entity e = gp.getNPCs().get(npcIndex);
+
+        if (e instanceof HostileEntity) {
+            takeDamage(1);
+        } else if (e instanceof NPC_OldMan)
+            if (gp.getInput().isKeyDown(KeyEvent.VK_SPACE))
+                e.speak();
     }
 
     public void pickupObject(int i) {
@@ -115,6 +127,28 @@ public class Player extends Entity {
 
 
     }
+
+    @Override
+    public void takeDamage(int i) {
+        if (IFrames > 0) return;
+        super.takeDamage(i);
+
+        IFrames = IFramesWhenHit;
+    }
+
+    @Override
+    public void draw(Graphics2D g2D) {
+        int blinkInterval = 20;
+
+        if (IFrames > 0) {
+            if ((IFrames / (blinkInterval / 2)) % 2 == 0) {
+                super.draw(g2D);
+            }
+        } else {
+            super.draw(g2D);
+        }
+    }
+
 
     @Override
     public void setAction() {

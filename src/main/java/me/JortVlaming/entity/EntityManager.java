@@ -2,6 +2,7 @@ package me.JortVlaming.entity;
 
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.Util;
+import me.JortVlaming.monster.MON_GreenSlime;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -62,6 +63,13 @@ public class EntityManager {
                                     addEntityToWorld(oldMan);
                                     break;
                                 }
+                                case 2: {
+                                    MON_GreenSlime slime = new MON_GreenSlime(gp);
+                                    slime.worldX = col*gp.getTileSize();
+                                    slime.worldY = row*gp.getTileSize();
+                                    addEntityToWorld(slime);
+                                    break;
+                                }
                             }
                         } catch (NumberFormatException e) {
                             System.err.println("Invalid number format at column " + col + ", row " + row + ". Defaulting to 0.");
@@ -100,8 +108,7 @@ public class EntityManager {
     public void updateEntities() {
         entitiesUpdatedCount = 0;
         averageEntityActionLockTimer = 0;
-        for (Entity activeEntity : activeEntities) {
-            if (activeEntity instanceof Player) continue;
+        for (Entity activeEntity : activeNPCEntities) {
             if (Util.getDistanceFromPlayer(activeEntity.worldX, activeEntity.worldY, gp) < 1000) {
                 activeEntity.update();
                 entitiesUpdatedCount++;
@@ -114,11 +121,12 @@ public class EntityManager {
 
     public void drawEntities(Graphics2D g2D) {
         entitiesDrawnCount = 0;
-        activeEntities.sort((o1, o2) -> {
-            return Integer.compare(o1.worldY, o2.worldY);
-        });
+        activeEntities.sort(Comparator.comparingInt(o -> o.worldY));
         for (Entity e : activeEntities) {
-            if (Util.isOnScreen(e.worldX, e.worldY, gp)) {
+            if (e instanceof Player) {
+                e.draw(g2D);
+            }
+            else if (Util.isOnScreen(e.worldX, e.worldY, gp)) {
                 e.draw(g2D);
                 entitiesDrawnCount++;
             }

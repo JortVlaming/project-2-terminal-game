@@ -19,7 +19,7 @@
             "scale": 0.75,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 512,
+                "x": 566.6666666666666,
                 "y": 511.3333333333333
             }
         },
@@ -45,8 +45,8 @@
             "scale": 3,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 512,
-                "y": 663.8333333333333
+                "x": 511.99999999999994,
+                "y": 383.8333333333333
             }
         },
         "test.tmx": {
@@ -58,8 +58,8 @@
             }
         }
     },
-    "last.exportedFilePath": "/home/crystalcoding/Desktop/projects/school/project-2-terminal-game/src/main/resources/worlds/test_world",
-    "last.imagePath": "/home/crystalcoding/Desktop/projects/school/project-2-terminal-game/src/main/resources/npc/spawns",
+    "last.exportedFilePath": "/home/crystalcoding/Desktop/projects/school/project-2-terminal-game/src/main/resources/worlds/test",
+    "last.imagePath": "/home/crystalcoding/Desktop/projects/school/project-2-terminal-game/src/main/resources/monster/spawns",
     "map.fixedSize": false,
     "map.lastUsedExportFilter": "CSV files (*.csv)",
     "map.lastUsedFormat": "tmx",
