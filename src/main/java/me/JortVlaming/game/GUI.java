@@ -177,11 +177,11 @@ public class GUI {
             int healthBarX = Util.worldXToScreenX((int) e.worldX);
             int healthBarY = Util.worldYToScreenY((int) e.worldY) - e.healthBarOffsetY;
 
-            g2D.setColor(Color.WHITE);
+            g2D.setColor(Color.GRAY);
+            g2D.fillRect(healthBarX-2 , healthBarY-2, gp.getTileSize()+4, height+4);
+            g2D.setColor(Color.BLACK);
             g2D.fillRect(healthBarX, healthBarY, gp.getTileSize(), height);
             g2D.setColor(Color.RED);
-
-
             g2D.fillRect(healthBarX, healthBarY, width, height);
         }
     }
