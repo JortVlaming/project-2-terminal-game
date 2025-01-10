@@ -95,7 +95,7 @@ public class Player extends Entity {
             canAttack = false;
             attackingTime++;
 
-            if (attackingTime >= 30) {
+            if (attackingTime >= 14) {
                 attackingTime = 0;
                 canAttack = true;
                 attacking = false;
@@ -182,6 +182,8 @@ public class Player extends Entity {
         Entity e = gp.getNPCs().get(npcIndex);
 
         if (e instanceof HostileEntity) {
+            HostileEntity he = (HostileEntity) e;
+            if (he.dying) return;
             takeDamage(1);
         } else if (e instanceof NPC_OldMan) {
             if (gp.getInput().isKeyDown(KeyEvent.VK_SPACE)) {

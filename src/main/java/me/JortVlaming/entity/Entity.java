@@ -3,6 +3,7 @@ package me.JortVlaming.entity;
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.GameState;
 import me.JortVlaming.game.Util;
+import me.JortVlaming.monster.HostileEntity;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -83,7 +84,7 @@ public abstract class Entity {
 
     public void incrementSpriteCounter() {
         spriteCounter++;
-        if (spriteCounter > 15) {
+        if (spriteCounter > 15 || (this instanceof Player && gp.getPlayer().attacking && spriteCounter > 7)) {
             spriteNum = spriteNum == 1 ? 2 : 1;
             spriteCounter = 0;
         }
@@ -119,29 +120,30 @@ public abstract class Entity {
 
         if (image == null) return;
 
-        if (Util.isOnScreen((int) worldX, (int) worldY, gp)) {
-            int screenX = (int) (worldX - gp.getPlayer().worldX + gp.getPlayer().screenX);
-            int screenY = (int) (worldY - gp.getPlayer().worldY + gp.getPlayer().screenY);
+        if (!Util.isOnScreen(worldX, worldY, gp)) {
+            return;
+        }
+        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
+        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
 
-            g2D.drawImage(image, screenX + spriteOffsetX, screenY + spriteOffsetY, spriteWidth, spriteHeight, null);
+        g2D.drawImage(image, screenX + spriteOffsetX, screenY + spriteOffsetY, spriteWidth, spriteHeight, null);
 
-            if (GamePanel.DEBUG) {
-                g2D.setColor(Color.RED);
-                g2D.fillRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
-                if (this instanceof Player) {
-                    Player p = (Player) this;
+        if (GamePanel.DEBUG) {
+            g2D.setColor(Color.RED);
+            g2D.fillRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            if (this instanceof Player) {
+                Player p = (Player) this;
 
-                    if (p.isAttackColliderActive()) {
-                        g2D.setColor(Color.BLUE);
-                        g2D.fillRect(screenX + p.attackCollisionArea.x, screenY + p.attackCollisionArea.y, p.attackCollisionArea.width, p.attackCollisionArea.height);
-                    }
+                if (p.isAttackColliderActive()) {
+                    g2D.setColor(Color.BLUE);
+                    g2D.fillRect(screenX + p.attackCollisionArea.x, screenY + p.attackCollisionArea.y, p.attackCollisionArea.width, p.attackCollisionArea.height);
                 }
-                g2D.setColor(Color.WHITE);
-                FontMetrics fm = g2D.getFontMetrics();
-                g2D.setFont(new Font("Arial", Font.PLAIN, 20));
-                Rectangle2D bounds = fm.getStringBounds(direction + "/" + life, g2D);
-                g2D.drawString(direction + "/" + life, (int) (screenX + solidArea.x + (double) solidArea.width / 2 - bounds.getWidth()/2), (int) (screenY + solidArea.y + bounds.getHeight()/2 + (double) solidArea.height / 2));
             }
+            g2D.setColor(Color.WHITE);
+            FontMetrics fm = g2D.getFontMetrics();
+            g2D.setFont(new Font("Arial", Font.PLAIN, 20));
+            Rectangle2D bounds = fm.getStringBounds(direction + "/" + life, g2D);
+            g2D.drawString(direction + "/" + life, (int) (screenX + solidArea.x + (double) solidArea.width / 2 - bounds.getWidth()/2), (int) (screenY + solidArea.y + bounds.getHeight()/2 + (double) solidArea.height / 2));
         }
     }
 
@@ -185,9 +187,10 @@ public abstract class Entity {
 
         if (!(this instanceof Player) && life <= 0) {
             System.out.println(this.getClass().getSimpleName() + " DIED!!!!");
-            gp.getEntityManager().removeEntityFromWorld(this);
+            if (!(this instanceof HostileEntity))
+                gp.getEntityManager().removeEntityFromWorld(this);
+        } else if (this instanceof Player && life <= 0) {
+            // TODO death
         }
-
-        // TODO death
     }
 }

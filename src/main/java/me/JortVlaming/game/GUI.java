@@ -169,7 +169,7 @@ public class GUI {
 
             HostileEntity e = (HostileEntity) entity;
 
-            if (e.life == e.maxLife) continue;
+            if (e.life == e.maxLife || e.dying) continue;
 
             int width = gp.getTileSize() / e.maxLife * e.life;
             int height = 10;

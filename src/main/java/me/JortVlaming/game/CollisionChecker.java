@@ -163,6 +163,10 @@ public class CollisionChecker {
         for (int i = 0; i < targets.size(); i++) {
             Entity target = gp.getNPCs().get(i);
             if (entity == target) continue;
+            if (target instanceof HostileEntity) {
+                HostileEntity e = (HostileEntity) target;
+                if (e.dying) continue;
+            }
             if (target != null) {
                 if (!Util.isOnScreen((int) target.worldX, (int) target.worldY, gp)) continue;
                 // Get entity's solid area position
@@ -335,6 +339,7 @@ public class CollisionChecker {
 
         if (entity.solidArea.intersects(gp.getPlayer().attackCollisionArea) && hs.IFrames <= 0) {
             entity.takeDamage(1);
+            gp.playSE(Sound.Clips.HITMONSTER);
         }
 
         gp.getPlayer().attackCollisionArea.x = oaX;
