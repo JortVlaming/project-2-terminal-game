@@ -37,6 +37,10 @@ public class MON_GreenSlime extends HostileEntity{
     public void update() {
         setAction();
         collisionOn = false;
+        if (IFrames > 0)
+            IFrames--;
+        else
+            gp.getCollisionChecker().checkPlayerAttack(this);
         gp.getCollisionChecker().checkPlayer(this);
         if (collisionOn) {
             gp.getPlayer().takeDamage(1);

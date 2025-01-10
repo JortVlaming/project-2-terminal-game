@@ -35,8 +35,15 @@ public abstract class Entity {
     public int maxLife;
     public int life;
 
+    // RENDERING STUFF
+    int spriteWidth, spriteHeight;
+    int spriteOffsetX = 0, spriteOffsetY = 0;
+
     public Entity(GamePanel gp) {
         this.gp = gp;
+
+        spriteWidth = gp.getTileSize();
+        spriteHeight = gp.getTileSize();
 
         solidArea = new Rectangle(0, 0, gp.getTileSize(), gp.getTileSize());
         solidAreaDefaultX = solidArea.x;
@@ -82,12 +89,11 @@ public abstract class Entity {
         }
     }
 
-    public void draw(Graphics2D g2D) {
-        BufferedImage image;
+    public BufferedImage getCurrentImage() {
+        BufferedImage image = null;
 
         switch (direction) {
-            case 0:
-            default: {
+            case 0: {
                 image = spriteNum == 1 ? up1 : up2;
                 break;
             }
@@ -105,20 +111,36 @@ public abstract class Entity {
             }
         }
 
+        return image;
+    }
+
+    public void draw(Graphics2D g2D) {
+        BufferedImage image = getCurrentImage();
+
+        if (image == null) return;
+
         if (Util.isOnScreen(worldX, worldY, gp)) {
             int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
             int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
 
-            g2D.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            g2D.drawImage(image, screenX + spriteOffsetX, screenY + spriteOffsetY, spriteWidth, spriteHeight, null);
 
             if (GamePanel.DEBUG) {
                 g2D.setColor(Color.RED);
                 g2D.fillRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+                if (this instanceof Player) {
+                    Player p = (Player) this;
+
+                    if (p.isAttackColliderActive()) {
+                        g2D.setColor(Color.BLUE);
+                        g2D.fillRect(screenX + p.attackCollisionArea.x, screenY + p.attackCollisionArea.y, p.attackCollisionArea.width, p.attackCollisionArea.height);
+                    }
+                }
                 g2D.setColor(Color.WHITE);
                 FontMetrics fm = g2D.getFontMetrics();
                 g2D.setFont(new Font("Arial", Font.PLAIN, 20));
-                Rectangle2D bounds = fm.getStringBounds(direction + "", g2D);
-                g2D.drawString(direction + "", (int) (screenX + solidArea.x + (double) solidArea.width / 2 - bounds.getWidth()/2), (int) (screenY + solidArea.y + bounds.getHeight()/2 + (double) solidArea.height / 2));
+                Rectangle2D bounds = fm.getStringBounds(direction + "/" + life, g2D);
+                g2D.drawString(direction + "/" + life, (int) (screenX + solidArea.x + (double) solidArea.width / 2 - bounds.getWidth()/2), (int) (screenY + solidArea.y + bounds.getHeight()/2 + (double) solidArea.height / 2));
             }
         }
     }
@@ -160,6 +182,12 @@ public abstract class Entity {
 
     public void takeDamage(int i) {
         life -= i;
+
+        if (!(this instanceof Player) && life <= 0) {
+            System.out.println(this.getClass().getSimpleName() + " DIED!!!!");
+            gp.getEntityManager().removeEntityFromWorld(this);
+        }
+
         // TODO death
     }
 }

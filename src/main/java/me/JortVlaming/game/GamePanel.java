@@ -309,4 +309,8 @@ public class GamePanel extends JPanel implements Runnable {
     public ArrayList<Entity> getNPCs() {
         return (ArrayList<Entity>) entityManager.activeNPCEntities;
     }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 }

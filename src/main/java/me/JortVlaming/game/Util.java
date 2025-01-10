@@ -1,5 +1,7 @@
 package me.JortVlaming.game;
 
+import me.JortVlaming.entity.Entity;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -31,5 +33,9 @@ public class Util {
 
     public static int getDistanceFromPlayer(Rectangle2D pits, GamePanel gp) {
         return getDistanceFromPlayer((int) pits.getX(), (int) pits.getY(), gp);
+    }
+
+    public static int getDistanceFromPlayer(Entity entity, GamePanel gp) {
+        return getDistanceFromPlayer(entity.worldX, entity.worldY, gp);
     }
 }

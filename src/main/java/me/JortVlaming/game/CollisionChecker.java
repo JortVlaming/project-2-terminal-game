@@ -2,6 +2,7 @@ package me.JortVlaming.game;
 
 import me.JortVlaming.entity.Entity;
 import me.JortVlaming.entity.Player;
+import me.JortVlaming.monster.HostileEntity;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -314,5 +315,32 @@ public class CollisionChecker {
         }
 
         return hit;
+    }
+
+    public void checkPlayerAttack(Entity entity) {
+        if (!(entity instanceof HostileEntity)) return;
+        if (Util.getDistanceFromPlayer(entity, gp) > 100) return;
+        if (!gp.getPlayer().isAttackColliderActive()) return;
+
+        HostileEntity hs = (HostileEntity) entity;
+
+        int oaX = gp.getPlayer().attackCollisionArea.x;
+        int oaY = gp.getPlayer().attackCollisionArea.y;
+
+        gp.getPlayer().attackCollisionArea.x = gp.getPlayer().worldX + gp.player.attackCollisionArea.x;
+        gp.getPlayer().attackCollisionArea.y = gp.getPlayer().worldY + gp.player.attackCollisionArea.y;
+
+        entity.solidArea.x = entity.worldX + entity.solidArea.x;
+        entity.solidArea.y = entity.worldY + entity.solidArea.y;
+
+        if (entity.solidArea.intersects(gp.getPlayer().attackCollisionArea) && hs.IFrames <= 0) {
+            entity.takeDamage(1);
+        }
+
+        gp.getPlayer().attackCollisionArea.x = oaX;
+        gp.getPlayer().attackCollisionArea.y = oaY;
+
+        entity.solidArea.x = entity.solidAreaDefaultX;
+        entity.solidArea.y = entity.solidAreaDefaultY;
     }
 }

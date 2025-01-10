@@ -100,9 +100,10 @@ public class EntityManager {
         activeEntities.add(entity);
     }
 
+    List<Entity> markedForDelete = new ArrayList<>();
+
     public void removeEntityFromWorld(Entity entity) {
-        activeNPCEntities.remove(entity);
-        activeEntities.remove(entity);
+        markedForDelete.add(entity);
     }
 
     public void updateEntities() {
@@ -114,6 +115,11 @@ public class EntityManager {
                 entitiesUpdatedCount++;
                 averageEntityActionLockTimer += activeEntity.actionLockTimer;
             }
+        }
+
+        for (Entity entity : markedForDelete) {
+            activeNPCEntities.remove(entity);
+            activeEntities.remove(entity);
         }
         
         averageEntityActionLockTimer /= (entitiesUpdatedCount > 0 ? entitiesUpdatedCount : 1);
