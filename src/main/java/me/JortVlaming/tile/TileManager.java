@@ -190,8 +190,8 @@ public class TileManager {
 
             int worldX = worldCol * gp.getTileSize();
             int worldY = worldRow * gp.getTileSize();
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+            int screenX = (int) (worldX - gp.getPlayer().worldX + gp.getPlayer().screenX);
+            int screenY = (int) (worldY - gp.getPlayer().worldY + gp.getPlayer().screenY);
 
             if (Util.isOnScreen(worldX, worldY, gp)) {
                 g2D.drawImage(tiles[tileNum].image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);

@@ -15,10 +15,10 @@ public class CollisionChecker {
     }
 
     public void checkTile(Entity entity) {
-        int entityLeftWorldX = entity.worldX + entity.solidArea.x;
-        int entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
-        int entityTopWorldY = entity.worldY + entity.solidArea.y;
-        int entityBottomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height;
+        int entityLeftWorldX = (int) (entity.worldX + entity.solidArea.x);
+        int entityRightWorldX = (int) (entity.worldX + entity.solidArea.x + entity.solidArea.width);
+        int entityTopWorldY = (int) (entity.worldY + entity.solidArea.y);
+        int entityBottomWorldY = (int) (entity.worldY + entity.solidArea.y + entity.solidArea.height);
 
         int entityLeftCol = entityLeftWorldX / gp.getTileSize();
         int entityRightCol = entityRightWorldX / gp.getTileSize();
@@ -83,8 +83,8 @@ public class CollisionChecker {
                 if (!Util.isOnScreen(gp.objectManager.getActiveObjects().get(i).worldX, gp.objectManager.getActiveObjects().get(i).worldY, gp))
                     continue;
                 // Get entity's solid area position
-                entity.solidArea.x = entity.worldX + entity.solidArea.x;
-                entity.solidArea.y = entity.worldY + entity.solidArea.y;
+                entity.solidArea.x = (int) (entity.worldX + entity.solidArea.x);
+                entity.solidArea.y = (int) (entity.worldY + entity.solidArea.y);
 
                 // Get the object's solid area position
                 gp.objectManager.getActiveObjects().get(i).solidArea.x = gp.objectManager.getActiveObjects().get(i).worldX + gp.objectManager.getActiveObjects().get(i).solidArea.x;
@@ -164,14 +164,14 @@ public class CollisionChecker {
             Entity target = gp.getNPCs().get(i);
             if (entity == target) continue;
             if (target != null) {
-                if (!Util.isOnScreen(target.worldX, target.worldY, gp)) continue;
+                if (!Util.isOnScreen((int) target.worldX, (int) target.worldY, gp)) continue;
                 // Get entity's solid area position
-                entity.solidArea.x = entity.worldX + entity.solidArea.x;
-                entity.solidArea.y = entity.worldY + entity.solidArea.y;
+                entity.solidArea.x = (int) (entity.worldX + entity.solidArea.x);
+                entity.solidArea.y = (int) (entity.worldY + entity.solidArea.y);
 
                 // Get the object's solid area position
-                target.solidArea.x = target.worldX + target.solidArea.x;
-                target.solidArea.y = target.worldY + target.solidArea.y;
+                target.solidArea.x = (int) (target.worldX + target.solidArea.x);
+                target.solidArea.y = (int) (target.worldY + target.solidArea.y);
 
                 switch (entity.direction) {
                     default:
@@ -227,17 +227,17 @@ public class CollisionChecker {
         if (!GamePanel.DO_ENTITIES) return;
         int index = -1;
 
-        if (!Util.isOnScreen(entity.worldX, entity.worldY, gp) || Util.getDistanceFromPlayer(entity.worldX, entity.worldY, gp) > 200) return;
+        if (!Util.isOnScreen((int) entity.worldX, (int) entity.worldY, gp) || Util.getDistanceFromPlayer((int) entity.worldX, (int) entity.worldY, gp) > 200) return;
 
         Player target = gp.getPlayer();
 
         // Get entity's solid area position
-        entity.solidArea.x = entity.worldX + entity.solidArea.x;
-        entity.solidArea.y = entity.worldY + entity.solidArea.y;
+        entity.solidArea.x = (int) (entity.worldX + entity.solidArea.x);
+        entity.solidArea.y = (int) (entity.worldY + entity.solidArea.y);
 
         // Get the object's solid area position
-        target.solidArea.x = target.worldX + target.solidArea.x;
-        target.solidArea.y = target.worldY + target.solidArea.y;
+        target.solidArea.x = (int) (target.worldX + target.solidArea.x);
+        target.solidArea.y = (int) (target.worldY + target.solidArea.y);
 
         switch (entity.direction) {
             default:
@@ -305,8 +305,8 @@ public class CollisionChecker {
     public boolean hit(Rectangle2D col, int reqDirection) {
         boolean hit = false;
 
-        gp.getPlayer().solidArea.x = gp.getPlayer().worldX + gp.player.solidArea.x;
-        gp.getPlayer().solidArea.y = gp.getPlayer().worldY + gp.player.solidArea.y;
+        gp.getPlayer().solidArea.x = (int) (gp.getPlayer().worldX + gp.player.solidArea.x);
+        gp.getPlayer().solidArea.y = (int) (gp.getPlayer().worldY + gp.player.solidArea.y);
 
         if (gp.getPlayer().solidArea.intersects(col)) {
             if (gp.getPlayer().direction == reqDirection || reqDirection == -1) {
@@ -327,11 +327,11 @@ public class CollisionChecker {
         int oaX = gp.getPlayer().attackCollisionArea.x;
         int oaY = gp.getPlayer().attackCollisionArea.y;
 
-        gp.getPlayer().attackCollisionArea.x = gp.getPlayer().worldX + gp.player.attackCollisionArea.x;
-        gp.getPlayer().attackCollisionArea.y = gp.getPlayer().worldY + gp.player.attackCollisionArea.y;
+        gp.getPlayer().attackCollisionArea.x = (int) (gp.getPlayer().worldX + gp.player.attackCollisionArea.x);
+        gp.getPlayer().attackCollisionArea.y = (int) (gp.getPlayer().worldY + gp.player.attackCollisionArea.y);
 
-        entity.solidArea.x = entity.worldX + entity.solidArea.x;
-        entity.solidArea.y = entity.worldY + entity.solidArea.y;
+        entity.solidArea.x = (int) (entity.worldX + entity.solidArea.x);
+        entity.solidArea.y = (int) (entity.worldY + entity.solidArea.y);
 
         if (entity.solidArea.intersects(gp.getPlayer().attackCollisionArea) && hs.IFrames <= 0) {
             entity.takeDamage(1);

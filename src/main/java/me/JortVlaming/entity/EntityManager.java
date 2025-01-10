@@ -2,7 +2,7 @@ package me.JortVlaming.entity;
 
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.Util;
-import me.JortVlaming.monster.MON_GreenSlime;
+import me.JortVlaming.monster.*;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -29,6 +29,8 @@ public class EntityManager {
     }
 
     public void loadEntities_csv(String map) {
+        activeNPCEntities = new ArrayList<>();
+        activeEntities = new ArrayList<>();
         try {
             InputStream is = getClass().getResourceAsStream("/worlds/" + map + "/" + map + "_NPCS.csv");
 
@@ -70,6 +72,34 @@ public class EntityManager {
                                     addEntityToWorld(slime);
                                     break;
                                 }
+                                case 3: {
+                                    MON_Bat bat = new MON_Bat(gp);
+                                    bat.worldX = col * gp.getTileSize();
+                                    bat.worldY = row * gp.getTileSize();
+                                    addEntityToWorld(bat);
+                                    break;
+                                }
+                                case 4: {
+                                    MON_RedSlime slime = new MON_RedSlime(gp);
+                                    slime.worldX = col*gp.getTileSize();
+                                    slime.worldY = row*gp.getTileSize();
+                                    addEntityToWorld(slime);
+                                    break;
+                                }
+                                case 5: {
+                                    MON_Orc orc = new MON_Orc(gp);
+                                    orc.worldX = col*gp.getTileSize();
+                                    orc.worldY = row*gp.getTileSize();
+                                    addEntityToWorld(orc);
+                                    break;
+                                }
+                                case 6: {
+                                    BOSS_Skeletonlord skeletonlord = new BOSS_Skeletonlord(gp);
+                                    skeletonlord.worldX = col * gp.getTileSize();
+                                    skeletonlord.worldY = row * gp.getTileSize();
+                                    addEntityToWorld(skeletonlord);
+                                    break;
+                                }
                             }
                         } catch (NumberFormatException e) {
                             System.err.println("Invalid number format at column " + col + ", row " + row + ". Defaulting to 0.");
@@ -96,7 +126,8 @@ public class EntityManager {
     }
 
     public void addEntityToWorld(Entity entity) {
-        activeNPCEntities.add(entity);
+        if (!(entity instanceof Player))
+            activeNPCEntities.add(entity);
         activeEntities.add(entity);
     }
 
@@ -110,7 +141,7 @@ public class EntityManager {
         entitiesUpdatedCount = 0;
         averageEntityActionLockTimer = 0;
         for (Entity activeEntity : activeNPCEntities) {
-            if (Util.getDistanceFromPlayer(activeEntity.worldX, activeEntity.worldY, gp) < 1000) {
+            if (Util.getDistanceFromPlayer((int) activeEntity.worldX, (int) activeEntity.worldY, gp) < 1000) {
                 activeEntity.update();
                 entitiesUpdatedCount++;
                 averageEntityActionLockTimer += activeEntity.actionLockTimer;
@@ -127,12 +158,12 @@ public class EntityManager {
 
     public void drawEntities(Graphics2D g2D) {
         entitiesDrawnCount = 0;
-        activeEntities.sort(Comparator.comparingInt(o -> o.worldY));
+        activeEntities.sort(Comparator.comparingDouble(o -> o.worldY));
         for (Entity e : activeEntities) {
             if (e instanceof Player) {
                 e.draw(g2D);
             }
-            else if (Util.isOnScreen(e.worldX, e.worldY, gp)) {
+            else if (Util.isOnScreen((int) e.worldX, (int) e.worldY, gp)) {
                 e.draw(g2D);
                 entitiesDrawnCount++;
             }

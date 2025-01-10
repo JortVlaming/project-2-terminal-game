@@ -108,6 +108,7 @@ public class GUI {
             int height = g2D.getFontMetrics().getHeight();
             g2D.drawString("E: " + gp.entityManager.entitiesDrawnCount + " / " + gp.entityManager.entitiesUpdatedCount + " / " + gp.entityManager.averageEntityActionLockTimer, 5, 15+height);
             g2D.drawString("X: " + gp.getPlayer().worldX + " Y: " + gp.getPlayer().worldY, 5, 15+height+5+height);
+            g2D.drawString("FPS: " + gp.FPS, 5, 15+height+5+height+5+height);
         }
     }
 
@@ -173,8 +174,8 @@ public class GUI {
             int width = gp.getTileSize() / e.maxLife * e.life;
             int height = 10;
 
-            int healthBarX = Util.worldXToScreenX(e.worldX);
-            int healthBarY = Util.worldYToScreenY(e.worldY);
+            int healthBarX = Util.worldXToScreenX((int) e.worldX);
+            int healthBarY = Util.worldYToScreenY((int) e.worldY) - e.healthBarOffsetY;
 
             g2D.setColor(Color.WHITE);
             g2D.fillRect(healthBarX, healthBarY, gp.getTileSize(), height);

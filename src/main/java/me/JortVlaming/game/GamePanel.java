@@ -111,6 +111,8 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
+    public int FPS = 0;
+
     @Override
     public void run() {
         running = true;
@@ -120,6 +122,8 @@ public class GamePanel extends JPanel implements Runnable {
         long lastTime = System.nanoTime();
         long currentTime;
         long timer = 0;
+
+        int frames = 0;
 
         while (running) {
             currentTime = System.nanoTime();
@@ -133,10 +137,13 @@ public class GamePanel extends JPanel implements Runnable {
                 update();
                 repaint();
                 delta--;
+                frames++;
             }
 
             if (timer >= 1000000000) {
                 timer = 0;
+                FPS = frames;
+                frames = 0;
             }
         }
 
@@ -182,6 +189,19 @@ public class GamePanel extends JPanel implements Runnable {
             }
             if (input.isKeyDown(KeyEvent.VK_L) && player.life < player.maxLife) {
                 player.life++;
+            }
+            if (input.isKeyUp(KeyEvent.VK_BACK_SLASH)) {
+                tileManager.loadMap_csv("test");
+                objectManager.loadObject_csv("test");
+                events.loadEventsFromMap_csv("test");
+                entityManager.loadEntities_csv("test");
+
+                entityManager.removeEntityFromWorld(player);
+
+                player = new Player(this, input);
+                player.worldX = ObjectManager.playerStartX;
+                player.worldY = ObjectManager.playerStartY;
+                entityManager.addEntityToWorld(player);
             }
         }
 

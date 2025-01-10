@@ -47,8 +47,8 @@ public class SuperObject implements Cloneable {
     }
 
     public void draw(Graphics2D g2D, GamePanel gp) {
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+        int screenX = (int) (worldX - gp.getPlayer().worldX + gp.getPlayer().screenX);
+        int screenY = (int) (worldY - gp.getPlayer().worldY + gp.getPlayer().screenY);
 
         if (Util.isOnScreen(worldX, worldY, gp)) {
             g2D.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);

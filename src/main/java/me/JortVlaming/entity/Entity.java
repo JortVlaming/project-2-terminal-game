@@ -36,7 +36,7 @@ public abstract class Entity {
     public int life;
 
     // RENDERING STUFF
-    int spriteWidth, spriteHeight;
+    protected int spriteWidth, spriteHeight;
     int spriteOffsetX = 0, spriteOffsetY = 0;
 
     public Entity(GamePanel gp) {
@@ -119,9 +119,9 @@ public abstract class Entity {
 
         if (image == null) return;
 
-        if (Util.isOnScreen(worldX, worldY, gp)) {
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+        if (Util.isOnScreen((int) worldX, (int) worldY, gp)) {
+            int screenX = (int) (worldX - gp.getPlayer().worldX + gp.getPlayer().screenX);
+            int screenY = (int) (worldY - gp.getPlayer().worldY + gp.getPlayer().screenY);
 
             g2D.drawImage(image, screenX + spriteOffsetX, screenY + spriteOffsetY, spriteWidth, spriteHeight, null);
 
