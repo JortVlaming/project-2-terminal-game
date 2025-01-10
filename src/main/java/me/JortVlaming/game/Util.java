@@ -38,4 +38,12 @@ public class Util {
     public static int getDistanceFromPlayer(Entity entity, GamePanel gp) {
         return getDistanceFromPlayer(entity.worldX, entity.worldY, gp);
     }
+
+    public static int worldXToScreenX(int worldX) {
+        return worldX - GamePanel.getInstance().getPlayer().worldX + GamePanel.getInstance().getPlayer().screenX;
+    }
+
+    public static int worldYToScreenY(int worldY) {
+        return worldY - GamePanel.getInstance().getPlayer().worldY + GamePanel.getInstance().getPlayer().screenY;
+    }
 }

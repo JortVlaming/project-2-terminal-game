@@ -1,5 +1,7 @@
 package me.JortVlaming.game;
 
+import me.JortVlaming.entity.Entity;
+import me.JortVlaming.monster.HostileEntity;
 import me.JortVlaming.object.ObjectMap;
 
 import java.awt.*;
@@ -87,7 +89,7 @@ public class GUI {
 
         if (gp.currentState == GameState.PLAYING) {
             drawPlayerLife(g2D);
-
+            drawHealthBars(g2D);
             drawGUIMessages(g2D);
         }
 
@@ -158,6 +160,29 @@ public class GUI {
         textHeight = metrics_64.getHeight();
 
         g2D.drawString("Blue Boy Adventure", gp.getWidth()/2 - textWidth/2, textHeight*2);
+    }
+
+    private void drawHealthBars(Graphics2D g2D) {
+        for (Entity entity : gp.getEntityManager().activeNPCEntities) {
+            if (!(entity instanceof HostileEntity)) continue;
+
+            HostileEntity e = (HostileEntity) entity;
+
+            if (e.life == e.maxLife) continue;
+
+            int width = gp.getTileSize() / e.maxLife * e.life;
+            int height = 10;
+
+            int healthBarX = Util.worldXToScreenX(e.worldX);
+            int healthBarY = Util.worldYToScreenY(e.worldY);
+
+            g2D.setColor(Color.WHITE);
+            g2D.fillRect(healthBarX, healthBarY, gp.getTileSize(), height);
+            g2D.setColor(Color.RED);
+
+
+            g2D.fillRect(healthBarX, healthBarY, width, height);
+        }
     }
 
     private void drawGUIMessages(Graphics2D g2D) {
