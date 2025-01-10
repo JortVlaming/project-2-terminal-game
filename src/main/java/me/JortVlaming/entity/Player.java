@@ -156,6 +156,8 @@ public class Player extends Entity {
             }
         }
 
+        interactedWithNPCThisFrame = false;
+
         if (IFrames > 0) IFrames--;
 
         if (attacking) {
@@ -186,8 +188,6 @@ public class Player extends Entity {
                 e.speak();
             }
         }
-
-        interactedWithNPCThisFrame = false;
     }
 
     public void pickupObject(int i) {
