@@ -44,7 +44,7 @@ public abstract class HostileEntity extends Entity {
         super.takeDamage(i);
 
         IFrames = IFramesWhenHit;
-        if (life == 0) {
+        if (life <= 0) {
             dying = true;
             deathCounter = timeToDie;
         }

@@ -338,7 +338,7 @@ public class CollisionChecker {
         entity.solidArea.y = (int) (entity.worldY + entity.solidArea.y);
 
         if (entity.solidArea.intersects(gp.getPlayer().attackCollisionArea) && hs.IFrames <= 0) {
-            entity.takeDamage(1);
+            entity.takeDamage(gp.getPlayer().getAttack());
             gp.playSE(Sound.Clips.HITMONSTER);
         }
 

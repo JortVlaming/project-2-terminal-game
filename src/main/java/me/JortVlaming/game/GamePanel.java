@@ -104,6 +104,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void startGameThread() {
         playMusic(Sound.Clips.BLUEBOYADVENTURE);
+        music.setVolume(0.5f);
 
         currentState = GameState.TITLE_SCREEN;
 
@@ -173,6 +174,41 @@ public class GamePanel extends JPanel implements Runnable {
             else if (currentState == GameState.PAUSED)
                 currentState = GameState.PLAYING;
         }
+        if (input.isKeyDown(KeyEvent.VK_C) && (currentState == GameState.PLAYING || currentState == GameState.CHARACTER_SCREEN)) {
+            if (currentState == GameState.CHARACTER_SCREEN) {
+                currentState = GameState.PLAYING;
+            } else {
+                currentState = GameState.CHARACTER_SCREEN;
+            }
+        }
+        if (currentState == GameState.CHARACTER_SCREEN && player.powerPoints > 0) {
+            if (input.isKeyDown(KeyEvent.VK_F)) {
+                if (GUI.upgradeHover == 0) GUI.upgradeHover = 2;
+                else GUI.upgradeHover--;
+            }
+            if (input.isKeyDown(KeyEvent.VK_V)) {
+                if (GUI.upgradeHover == 2) GUI.upgradeHover = 0;
+                else GUI.upgradeHover++;
+            }
+            if (input.isKeyDown(KeyEvent.VK_ENTER)) {
+                player.powerPoints--;
+                switch (GUI.upgradeHover) {
+                    case 0: {
+                        player.maxLife += 2;
+                        player.life += 2;
+                        break;
+                    }
+                    case 1: {
+                        player.strength++;
+                        break;
+                    }
+                    case 2: {
+                        player.dexterity++;
+                        break;
+                    }
+                }
+            }
+        }
 
         if ((input.isKeyDown(KeyEvent.VK_F3) && ALLOW_DEBUG) || (input.isKey(KeyEvent.VK_SHIFT) && input.isKey(KeyEvent.VK_CONTROL) && input.isKeyDown(KeyEvent.VK_F3))) {
             DEBUG = !DEBUG;
@@ -217,12 +253,12 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        if (currentState == GameState.PLAYING && !skipPlayerThisFrame) {
+        if (currentState == GameState.PLAYING) {
             if (DO_ENTITIES) {
                 entityManager.updateEntities();
             }
-
-            player.update();
+            if (!skipPlayerThisFrame)
+                player.update();
         }
 
         input.update();

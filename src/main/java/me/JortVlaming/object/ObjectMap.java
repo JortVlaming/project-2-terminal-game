@@ -22,7 +22,9 @@ public enum ObjectMap {
     BLUE_SHIELD("blue_shield", 19),
     WOOD_SHIELD("wood_shield", 20),
     SWORD("sword", 21),
-    TENT("tent", 22, true);
+    TENT("tent", 22, true),
+    SKY_SWORD("sky_sword", 23),
+    GOLD_SWORD("gold_sword", 24);
 
     String name;
     int index;

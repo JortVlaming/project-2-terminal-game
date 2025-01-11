@@ -3,6 +3,12 @@ package me.JortVlaming.entity;
 import me.JortVlaming.game.*;
 import me.JortVlaming.monster.HostileEntity;
 import me.JortVlaming.monster.MON_GreenSlime;
+import me.JortVlaming.object.ObjectMap;
+import me.JortVlaming.object.items.shield.ShieldItem;
+import me.JortVlaming.object.items.sword.GoldSword;
+import me.JortVlaming.object.items.sword.NormalSword;
+import me.JortVlaming.object.items.sword.SkySword;
+import me.JortVlaming.object.items.sword.SwordItem;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -38,6 +44,19 @@ public class Player extends Entity {
 
     // </editor-fold>
 
+    // CHARACTER ATTRIBUTES
+    public int level;
+    public int strength;
+    public int dexterity;
+    public int attack;
+    public int defense;
+    public int exp;
+    public int nextLevelExp;
+    public int coin;
+    public SwordItem currentWeapon;
+    public ShieldItem currentShield;
+    public int powerPoints;
+
     public Player(GamePanel gp, Input i) {
         super(gp);
         this.i = i;
@@ -62,6 +81,27 @@ public class Player extends Entity {
 
         maxLife = 6;
         life = maxLife;
+
+        // PLAYER ATTRIBUTES
+        level = 1;
+        strength = 1;
+        dexterity = 1;
+        exp = 0;
+        nextLevelExp = 5;
+        coin = 0;
+        currentWeapon = new NormalSword();
+        currentShield = null;
+        powerPoints = 3;
+    }
+
+    public int getAttack() {
+        return attack = (int) (strength + currentWeapon.attackValue);
+    }
+
+    public int getDefense() {
+        if (currentShield != null)
+            return defense = (int) (dexterity * currentShield.defenseValue + 1);
+        return defense = dexterity;
     }
 
     @Override

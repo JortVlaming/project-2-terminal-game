@@ -6,4 +6,5 @@ public enum GameState {
     DIALOGUE,
     GAME_OVER,
     TITLE_SCREEN,
+    CHARACTER_SCREEN
 }

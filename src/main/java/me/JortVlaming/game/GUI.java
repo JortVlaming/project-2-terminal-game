@@ -5,6 +5,7 @@ import me.JortVlaming.monster.HostileEntity;
 import me.JortVlaming.object.ObjectMap;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -18,6 +19,7 @@ public class GUI {
 
     Font font;
     Font font_16;
+    Font font_24;
     Font font_64;
 
     BasicStroke bStroke_0 = new BasicStroke(0f);
@@ -40,6 +42,7 @@ public class GUI {
         if (is == null) {
             font = new Font("Arial", Font.PLAIN, 32);
             font_16 = font.deriveFont(16f);
+            font_24 = font.deriveFont(24f);
             font_64 = font.deriveFont(64f);
             System.err.println("Failed to load font " + fontFileName + ". Using Arial as fallback.");
             return;
@@ -48,6 +51,7 @@ public class GUI {
             font = Font.createFont(Font.TRUETYPE_FONT, is);
             font = font.deriveFont(Font.PLAIN, 32);
             font_16 = font.deriveFont(16f);
+            font_24 = font.deriveFont(24f);
             font_64 = font.deriveFont(64f);
             is.close();
         } catch (Exception e) {
@@ -102,6 +106,12 @@ public class GUI {
             drawTitleScreen(g2D);
         }
 
+        if (gp.currentState == GameState.CHARACTER_SCREEN) {
+            drawHealthBars(g2D);
+            drawPlayerStats(g2D);
+            drawPlayerLife(g2D);
+        }
+
         if (GamePanel.DEBUG) {
             g2D.setColor(Color.WHITE);
             g2D.setBackground(Color.GRAY);
@@ -139,6 +149,52 @@ public class GUI {
             }
             i++;
             x += gp.tileSize;
+        }
+    }
+
+    public int upgradeHover = 0;
+
+    private void drawPlayerStats(Graphics2D g2D) {
+        int x = gp.getWidth() - gp.getTileSize()*5;
+        int y = gp.getTileSize() * 4;
+
+        g2D.setColor(new Color(0,0,0,0.6f));
+        g2D.fillRoundRect(x, y, gp.getTileSize()*4, gp.getTileSize()*4-10, 10, 10);
+
+        g2D.setColor(new Color(1,1,1,1f));
+        float thickness = 5f;
+        Stroke old = g2D.getStroke();
+        g2D.setStroke(new BasicStroke(thickness));
+        g2D.drawRoundRect(x+10, y+10, gp.getTileSize()*4-20, gp.getTileSize()*4-30, 10, 10);
+        g2D.setStroke(old);
+
+        int textX = gp.getWidth() - gp.getTileSize()*2;
+
+        g2D.drawString("Level", x+20, y+40);
+        g2D.drawString(String.valueOf(gp.getPlayer().level), textX+20, y+40);
+
+        g2D.drawString("Life", x+20, y+70);
+        g2D.drawString(gp.getPlayer().life + "/" + gp.getPlayer().maxLife, textX-20, y+70);
+
+        g2D.drawString("Strength", x+20, y+100);
+        g2D.drawString(String.valueOf(gp.getPlayer().strength), textX+20, y+100);
+
+        g2D.drawString("Dexterity", x+20, y+130);
+        g2D.drawString(String.valueOf(gp.getPlayer().dexterity), textX+20, y+130);
+
+        g2D.drawString("EXP", x+20, y+160);
+        g2D.drawString(gp.getPlayer().exp + "/" + gp.getPlayer().nextLevelExp, textX-20, y+160);
+
+        g2D.drawString("Coins", x+20, y+190);
+        g2D.drawString(String.valueOf(gp.getPlayer().coin), textX+20, y+190);
+
+        g2D.setFont(font_24);
+        g2D.drawString("Power Points", x+20, y+220);
+        g2D.setFont(font);
+        g2D.drawString(String.valueOf(gp.getPlayer().powerPoints), textX+20, y+220);
+
+        if (gp.getPlayer().powerPoints > 0) {
+            g2D.drawString("<", textX+gp.getTileSize()+10, y+70+(30*upgradeHover));
         }
     }
 
@@ -206,7 +262,6 @@ public class GUI {
             }
         }
     }
-
 
     private void drawDialogueBox(Graphics2D g2D) {
         int x = gp.getTileSize() * 2;
