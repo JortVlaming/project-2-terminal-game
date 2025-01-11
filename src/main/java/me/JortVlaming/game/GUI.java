@@ -255,7 +255,7 @@ public class GUI {
                 int boxX = 5;
                 int boxY = y - textHeight - 5;
                 g2D.setColor(Color.BLACK);
-                g2D.fillRect(boxX, boxY, boxWidth, boxHeight);
+                //g2D.fillRect(boxX, boxY, boxWidth, boxHeight);
                 g2D.setColor(Color.WHITE);
                 g2D.drawString(message.text, boxX + 15, boxY + (boxHeight - (boxHeight - textHeight) / 2 - metrics.getDescent()));
                 i++;
