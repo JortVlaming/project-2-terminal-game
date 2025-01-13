@@ -23,6 +23,7 @@ public class MON_Orc extends HostileEntity{
         healthBarOffsetY = 15;
 
         expOnKill = 4;
+        attack = 4;
     }
 
     @Override

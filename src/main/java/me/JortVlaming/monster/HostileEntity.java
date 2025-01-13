@@ -3,6 +3,7 @@ package me.JortVlaming.monster;
 import me.JortVlaming.entity.Entity;
 import me.JortVlaming.game.GUI;
 import me.JortVlaming.game.GamePanel;
+import me.JortVlaming.game.Sound;
 
 import java.awt.*;
 import java.util.Random;
@@ -19,6 +20,7 @@ public abstract class HostileEntity extends Entity {
     public int timeToDie = 90;
 
     public int expOnKill = 0;
+    public int attack = 0;
 
     public HostileEntity(GamePanel gp) {
         super(gp);
@@ -80,7 +82,14 @@ public abstract class HostileEntity extends Entity {
             gp.getCollisionChecker().checkPlayerAttack(this);
         gp.getCollisionChecker().checkPlayer(this);
         if (collisionOn) {
-            gp.getPlayer().takeDamage(1);
+            if (gp.getPlayer().IFrames <= 0) {
+                gp.playSE(Sound.Clips.GAMEOVER);
+
+                int damage = attack - gp.getPlayer().getDefense();
+                if (damage < 0) damage = 0;
+
+                gp.getPlayer().takeDamage(damage);
+            }
         }
         gp.getCollisionChecker().checkTile(this);
 

@@ -85,7 +85,7 @@ public class Player extends Entity {
         // PLAYER ATTRIBUTES
         level = 1;
         strength = 1;
-        dexterity = 1;
+        dexterity = 0;
         exp = 0;
         nextLevelExp = 5;
         coin = 0;

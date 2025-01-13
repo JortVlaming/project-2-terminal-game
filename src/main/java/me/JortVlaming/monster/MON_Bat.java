@@ -21,6 +21,7 @@ public class MON_Bat extends HostileEntity{
         solidAreaDefaultY = solidArea.y;
 
         expOnKill = 1;
+        attack = 1;
     }
 
     @Override
