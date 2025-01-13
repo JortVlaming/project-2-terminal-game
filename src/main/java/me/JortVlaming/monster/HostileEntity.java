@@ -1,6 +1,7 @@
 package me.JortVlaming.monster;
 
 import me.JortVlaming.entity.Entity;
+import me.JortVlaming.game.GUI;
 import me.JortVlaming.game.GamePanel;
 
 import java.awt.*;
@@ -16,6 +17,8 @@ public abstract class HostileEntity extends Entity {
     public boolean dying = false;
     public int deathCounter = -1;
     public int timeToDie = 90;
+
+    public int expOnKill = 0;
 
     public HostileEntity(GamePanel gp) {
         super(gp);
@@ -47,6 +50,16 @@ public abstract class HostileEntity extends Entity {
         if (life <= 0) {
             dying = true;
             deathCounter = timeToDie;
+
+            gp.getPlayer().exp += expOnKill;
+
+            while (gp.getPlayer().exp >= gp.getPlayer().nextLevelExp && gp.getPlayer().level < 20) {
+                gp.getPlayer().exp -= gp.getPlayer().nextLevelExp;
+                gp.getPlayer().level += 1;
+                gp.getPlayer().nextLevelExp = 5 * gp.getPlayer().level;
+                gp.getPlayer().powerPoints++;
+                gp.getGUI().showMessage(new GUI.Message("You levelled up!", 2500));
+            }
         }
     }
 

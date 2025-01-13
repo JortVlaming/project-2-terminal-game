@@ -159,39 +159,77 @@ public class GUI {
         int y = gp.getTileSize() * 4;
 
         g2D.setColor(new Color(0,0,0,0.6f));
-        g2D.fillRoundRect(x, y, gp.getTileSize()*4, gp.getTileSize()*4-10, 10, 10);
+        g2D.fillRoundRect(x, y, gp.getTileSize()*4, gp.getTileSize()*4+20, 10, 10);
 
         g2D.setColor(new Color(1,1,1,1f));
         float thickness = 5f;
         Stroke old = g2D.getStroke();
         g2D.setStroke(new BasicStroke(thickness));
-        g2D.drawRoundRect(x+10, y+10, gp.getTileSize()*4-20, gp.getTileSize()*4-30, 10, 10);
+        g2D.drawRoundRect(x+10, y+10, gp.getTileSize()*4-20, gp.getTileSize()*4, 10, 10);
         g2D.setStroke(old);
 
         int textX = gp.getWidth() - gp.getTileSize()*2;
 
-        g2D.drawString("Level", x+20, y+40);
-        g2D.drawString(String.valueOf(gp.getPlayer().level), textX+20, y+40);
+        int superYOffset = 40;
 
-        g2D.drawString("Life", x+20, y+70);
-        g2D.drawString(gp.getPlayer().life + "/" + gp.getPlayer().maxLife, textX-20, y+70);
+        g2D.drawString("Level", x+20, y+superYOffset);
+        FontMetrics metrics = g2D.getFontMetrics();
+        String s = String.valueOf(gp.getPlayer().level);
+        int stringWidth = metrics.stringWidth(s);
+        int centeredX = (int) (textX + 10 - (stringWidth / 2));
+        if (s.length() == 1) {
+            s = " " + s;
+            centeredX += 5;
+        }
+        g2D.drawString(s, centeredX, y+superYOffset);
 
-        g2D.drawString("Strength", x+20, y+100);
-        g2D.drawString(String.valueOf(gp.getPlayer().strength), textX+20, y+100);
+        superYOffset += 30;
 
-        g2D.drawString("Dexterity", x+20, y+130);
-        g2D.drawString(String.valueOf(gp.getPlayer().dexterity), textX+20, y+130);
+        g2D.drawString("Life", x+20, y+superYOffset);
+        g2D.drawString(gp.getPlayer().life + "/" + gp.getPlayer().maxLife, textX-20, y+superYOffset);
 
-        g2D.drawString("EXP", x+20, y+160);
-        g2D.drawString(gp.getPlayer().exp + "/" + gp.getPlayer().nextLevelExp, textX-20, y+160);
+        superYOffset += 30;
 
-        g2D.drawString("Coins", x+20, y+190);
-        g2D.drawString(String.valueOf(gp.getPlayer().coin), textX+20, y+190);
+        g2D.drawString("Strength", x+20, y+superYOffset);
+        g2D.drawString(String.valueOf(gp.getPlayer().strength), textX+20, y+superYOffset);
+
+        superYOffset += 30;
+
+        g2D.drawString("Dexterity", x+20, y+superYOffset);
+        g2D.drawString(String.valueOf(gp.getPlayer().dexterity), textX+20, y+superYOffset);
+
+        superYOffset += 30;
+
+        if (gp.getPlayer().level < 20) {
+            g2D.drawString("EXP", x + 20, y + superYOffset);
+            String s2 = String.valueOf(gp.getPlayer().exp);
+            g2D.drawString(s2, textX + 20, y + superYOffset);
+
+            superYOffset += 30;
+
+            g2D.drawString("Next Level", x + 20, y + superYOffset);
+            metrics = g2D.getFontMetrics();
+            stringWidth = metrics.stringWidth(s2);
+            centeredX = (int) (textX + 10 - (stringWidth / 2));
+            s2 = String.valueOf(gp.getPlayer().nextLevelExp);
+            if (s2.length() == 1) {
+                s2 = " " + s2;
+                centeredX += 5;
+            }
+            g2D.drawString(s2, centeredX, y + superYOffset);
+
+            superYOffset += 30;
+        }
+
+        g2D.drawString("Coins", x+20, y+superYOffset);
+        g2D.drawString(String.valueOf(gp.getPlayer().coin), textX+20, y+superYOffset);
+
+        superYOffset += 30;
 
         g2D.setFont(font_24);
-        g2D.drawString("Power Points", x+20, y+220);
+        g2D.drawString("Power Points", x+20, y+superYOffset);
         g2D.setFont(font);
-        g2D.drawString(String.valueOf(gp.getPlayer().powerPoints), textX+20, y+220);
+        g2D.drawString(String.valueOf(gp.getPlayer().powerPoints), textX+20, y+superYOffset);
 
         if (gp.getPlayer().powerPoints > 0) {
             g2D.drawString("<", textX+gp.getTileSize()+10, y+70+(30*upgradeHover));

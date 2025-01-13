@@ -19,6 +19,8 @@ public class MON_GreenSlime extends HostileEntity{
 
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+
+        expOnKill = 2;
     }
 
     @Override

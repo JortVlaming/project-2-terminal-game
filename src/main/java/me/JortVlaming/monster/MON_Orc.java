@@ -21,6 +21,8 @@ public class MON_Orc extends HostileEntity{
         solidAreaDefaultY = solidArea.y;
 
         healthBarOffsetY = 15;
+
+        expOnKill = 4;
     }
 
     @Override
