@@ -42,19 +42,19 @@
             }
         },
         "overworld.tmx": {
-            "scale": 3,
+            "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 511.99999999999994,
-                "y": 383.8333333333333
+                "x": 512,
+                "y": 383.5
             }
         },
         "test.tmx": {
-            "scale": 3,
-            "selectedLayer": 3,
+            "scale": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 225.66666666666663,
-                "y": 314.16666666666663
+                "x": 386,
+                "y": 295.75
             }
         }
     },

@@ -15,57 +15,66 @@ public class CollisionChecker {
     }
 
     public void checkTile(Entity entity) {
-        int entityLeftWorldX = (int) (entity.worldX + entity.solidArea.x);
-        int entityRightWorldX = (int) (entity.worldX + entity.solidArea.x + entity.solidArea.width);
-        int entityTopWorldY = (int) (entity.worldY + entity.solidArea.y);
-        int entityBottomWorldY = (int) (entity.worldY + entity.solidArea.y + entity.solidArea.height);
+        int entityLeftWorldX = entity.worldX + entity.solidArea.x;
+        int entityRightWorldX = entityLeftWorldX + entity.solidArea.width;
+        int entityTopWorldY = entity.worldY + entity.solidArea.y;
+        int entityBottomWorldY = entityTopWorldY + entity.solidArea.height;
 
         int entityLeftCol = entityLeftWorldX / gp.getTileSize();
         int entityRightCol = entityRightWorldX / gp.getTileSize();
         int entityTopRow = entityTopWorldY / gp.getTileSize();
-        int entityBottomRow;
+        int entityBottomRow = entityBottomWorldY / gp.getTileSize();
 
         int tileNum1, tileNum2;
 
         try {
             switch (entity.direction) {
-                case 0:
-                default: {
-                    entityTopRow = (entityTopWorldY - entity.speed) / gp.getTileSize();
-                    tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
-                    tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
-                    if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
-                        entity.collisionOn = true;
+                case 0: // Up
+                    for (int row = entityTopRow; row >= Math.max(0, (entityTopWorldY - entity.speed) / gp.getTileSize()); row--) {
+                        tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][row];
+                        tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][row];
+                        if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
+                            entity.collisionOn = true;
+                            return;
+                        }
                     }
                     break;
-                }
-                case 1: {
-                    entityRightCol = (entityRightWorldX + entity.speed) / gp.getTileSize();
-                    tileNum1 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
-                    tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityTopRow];
-                    if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
-                        entity.collisionOn = true;
+
+                case 1: // Right
+                    for (int col = entityRightCol; col <= Math.min(gp.tileManager.getMapTileNum().length - 1, (entityRightWorldX + entity.speed) / gp.getTileSize()); col++) {
+                        tileNum1 = gp.tileManager.getMapTileNum()[col][entityTopRow];
+                        tileNum2 = gp.tileManager.getMapTileNum()[col][entityBottomRow];
+                        if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
+                            entity.collisionOn = true;
+                            return;
+                        }
                     }
                     break;
-                }
-                case 2: {
-                    entityBottomRow = (entityBottomWorldY + entity.speed) / gp.getTileSize();
-                    tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityBottomRow];
-                    tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][entityBottomRow];
-                    if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
-                        entity.collisionOn = true;
+
+                case 2: // Down
+                    for (int row = entityBottomRow; row <= Math.min(gp.tileManager.getMapTileNum()[0].length - 1, (entityBottomWorldY + entity.speed) / gp.getTileSize()); row++) {
+                        tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][row];
+                        tileNum2 = gp.tileManager.getMapTileNum()[entityRightCol][row];
+                        if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
+                            entity.collisionOn = true;
+                            return;
+                        }
                     }
                     break;
-                }
-                case 3: {
-                    entityLeftCol = (entityLeftWorldX - entity.speed) / gp.getTileSize();
-                    tileNum1 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
-                    tileNum2 = gp.tileManager.getMapTileNum()[entityLeftCol][entityTopRow];
-                    if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
-                        entity.collisionOn = true;
+
+                case 3: // Left
+                    for (int col = entityLeftCol; col >= Math.max(0, (entityLeftWorldX - entity.speed) / gp.getTileSize()); col--) {
+                        tileNum1 = gp.tileManager.getMapTileNum()[col][entityTopRow];
+                        tileNum2 = gp.tileManager.getMapTileNum()[col][entityBottomRow];
+                        if (gp.tileManager.getTiles()[tileNum1].collision || gp.tileManager.getTiles()[tileNum2].collision) {
+                            entity.collisionOn = true;
+                            return;
+                        }
                     }
                     break;
-                }
+
+                default:
+                    break;
             }
         } catch (IndexOutOfBoundsException e) {
             entity.collisionOn = true;
