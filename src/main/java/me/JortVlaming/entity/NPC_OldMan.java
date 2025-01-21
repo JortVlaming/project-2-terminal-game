@@ -1,14 +1,11 @@
 package me.JortVlaming.entity;
 
+import com.crystalcoding.pathfinding.Point;
 import me.JortVlaming.game.GUI;
 import me.JortVlaming.game.GamePanel;
-import me.JortVlaming.game.GameState;
+import me.JortVlaming.game.Util;
+import org.apache.commons.lang3.ArrayUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
 import java.util.Random;
 
 public class NPC_OldMan extends Entity {
@@ -43,38 +40,10 @@ public class NPC_OldMan extends Entity {
         gp.getCollisionChecker().checkTile(this);
         gp.getCollisionChecker().checkPlayer(this);
 
-        moveWithCurrentDirection();
+        if (currentPointPath != null)
+            moveWithCurrentDirection();
 
         incrementSpriteCounter();
-    }
-
-    @Override
-    public void setAction() {
-        actionLockTimer++;
-
-        if (actionLockTimer >= 90) {
-            actionLockTimer = 0;
-            Random r = new Random();
-            int i = r.nextInt(5);
-
-            switch (i) {
-                case 1: {
-                    direction = 0;
-                    break;
-                }
-                case 2: {
-                    direction = 1;
-                    break;
-                }
-                case 3: {
-                    direction = 2;
-                    break;
-                }
-                case 4: {
-                    direction = 3;
-                }
-            }
-        }
     }
 
     @Override

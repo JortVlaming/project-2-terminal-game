@@ -101,30 +101,6 @@ public abstract class HostileEntity extends Entity {
     @Override
     public void setAction() {
         if (dying) return;
-        actionLockTimer++;
-
-        if (actionLockTimer >= 90) {
-            actionLockTimer = 0;
-            Random r = new Random();
-            int i = r.nextInt(5);
-
-            switch (i) {
-                case 1: {
-                    direction = 0;
-                    break;
-                }
-                case 2: {
-                    direction = 1;
-                    break;
-                }
-                case 3: {
-                    direction = 2;
-                    break;
-                }
-                case 4: {
-                    direction = 3;
-                }
-            }
-        }
+        super.setAction();
     }
 }

@@ -1,9 +1,12 @@
 package me.JortVlaming.entity;
 
+import com.crystalcoding.pathfinding.Point;
+import com.crystalcoding.pathfinding.PointPath;
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.GameState;
 import me.JortVlaming.game.Util;
 import me.JortVlaming.monster.HostileEntity;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,6 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 
 public abstract class Entity {
     // CONFIG STUFF
@@ -40,6 +44,12 @@ public abstract class Entity {
     protected int spriteWidth, spriteHeight;
     int spriteOffsetX = 0, spriteOffsetY = 0;
 
+    // PATHING STUFF
+    PointPath currentPointPath;
+    int currentPointIndex = 0;
+    boolean lockedToPlayer = false;
+    Color pathColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1f);
+
     public Entity(GamePanel gp) {
         this.gp = gp;
 
@@ -56,7 +66,6 @@ public abstract class Entity {
     public abstract void loadImages();
 
     public abstract void update();
-    public abstract void setAction();
 
     public void speak() {
         gp.currentState = GameState.DIALOGUE;
@@ -192,5 +201,78 @@ public abstract class Entity {
         } else if (this instanceof Player && life <= 0) {
             // TODO death
         }
+    }
+
+    public void setAction() {
+        if (currentPointPath == null || lockedToPlayer) {
+            Random r = new Random();
+
+            int currentX = Util.worldXToGridX(worldX);
+            int currentY = Util.worldYToGridY(worldY);
+
+            int goalX;
+            int goalY;
+
+            if (lockedToPlayer) {
+                goalX = Util.worldXToGridX(gp.getPlayer().worldX);
+                goalY = Util.worldYToGridY(gp.getPlayer().worldY);
+            } else {
+                goalX = r.nextInt(currentX-5, currentX+5);
+                goalY = r.nextInt(currentY-5, currentY+5);
+            }
+
+            currentPointPath = null;
+            currentPointPath = gp.getPathfindingManager().find(currentX, currentY, goalX, goalY);
+            currentPointIndex = 0;
+            if (currentPointPath != null) {
+                ArrayUtils.reverse(currentPointPath.points());
+            }
+        }
+
+        if (currentPointPath == null) return;
+
+        if (Util.getDistanceFromPoint(this, currentPointPath.points()[currentPointIndex]) < 1) {
+            currentPointIndex++;
+
+            if (currentPointIndex >= currentPointPath.points().length) {
+                currentPointPath = null;
+                return;
+            }
+        }
+
+        Point currentPoint = currentPointPath.points()[currentPointIndex];
+
+        int wX = Util.gridXToWorldX(currentPoint.x());
+        int wY = Util.gridYToWorldY(currentPoint.y());
+
+        if (wY < worldY) {
+            // point is above the entity
+            direction = 0;
+            // System.out.println(currentPoint + " Up");
+        } else if (wY > worldY) {
+            // point is below the entity
+            direction = 2;
+            // System.out.println(currentPoint + " Down");
+        } else if (wX > worldX) {
+            // point is right of the entity
+            direction = 1;
+            // System.out.println(currentPoint + " Right");
+        } else if (wX < worldX) {
+            // point is left of the entity
+            direction = 3;
+            // System.out.println(currentPoint + " Left");
+        }
+    }
+
+    public PointPath getCurrentPointPath() {
+        return currentPointPath;
+    }
+
+    public int getCurrentPointIndex() {
+        return currentPointIndex;
+    }
+
+    public Color getPointColor() {
+        return pathColor;
     }
 }

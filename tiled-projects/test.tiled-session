@@ -51,10 +51,10 @@
         },
         "test.tmx": {
             "scale": 2,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 386,
-                "y": 295.75
+                "x": 349.5,
+                "y": 376.25
             }
         }
     },

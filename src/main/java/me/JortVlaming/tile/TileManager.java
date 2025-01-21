@@ -1,5 +1,7 @@
 package me.JortVlaming.tile;
 
+import com.crystalcoding.pathfinding.BaseNode;
+import com.crystalcoding.pathfinding.PointNotOnGridException;
 import me.JortVlaming.game.GamePanel;
 import me.JortVlaming.game.Util;
 
@@ -166,6 +168,21 @@ public class TileManager {
                     }
 
                     mapTileNum[col][row] = num;
+
+                    Tile t = tiles[num];
+
+                    int scaledCol = col * 3;
+                    int scaledRow = row * 3;
+
+                    for (int i = 1; i < 4; i++) {
+                        for (int j = 1; j < 4; j++) {
+                            try {
+                                gp.getPathfindingManager().setNode(scaledCol + i, scaledRow + j, new BaseNode().setWalkable(!t.collision));
+                            } catch (PointNotOnGridException ignored) {}
+                            System.out.println("made " + (scaledCol+i) + "," + (scaledRow+j) + " node" + (t.collision ? " non" : "") +" walkable");
+                        }
+                    }
+
                     col++;
                 }
 

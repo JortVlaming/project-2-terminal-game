@@ -1,6 +1,10 @@
 package me.JortVlaming.game;
 
+import com.crystalcoding.pathfinding.BaseNode;
+import com.crystalcoding.pathfinding.Point;
+import com.crystalcoding.pathfinding.PointPath;
 import me.JortVlaming.entity.Entity;
+import me.JortVlaming.entity.EntityManager;
 import me.JortVlaming.monster.HostileEntity;
 import me.JortVlaming.object.ObjectMap;
 
@@ -13,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.lang.Record;
 
 public class GUI {
     GamePanel gp;
@@ -119,6 +124,72 @@ public class GUI {
             g2D.drawString("E: " + gp.entityManager.entitiesDrawnCount + " / " + gp.entityManager.entitiesUpdatedCount + " / " + gp.entityManager.averageEntityActionLockTimer, 5, 15+height);
             g2D.drawString("X: " + gp.getPlayer().worldX + " Y: " + gp.getPlayer().worldY, 5, 15+height+5+height);
             g2D.drawString("FPS: " + gp.FPS, 5, 15+height+5+height+5+height);
+
+            float thickness = 5f;
+            Stroke old = g2D.getStroke();
+            g2D.setStroke(new BasicStroke(thickness));
+
+            for (BaseNode[] nodeLayer : gp.getPathfindingManager().getNodes()) {
+                for (BaseNode node : nodeLayer) {
+                    if (node.isWalkable()) {
+                        g2D.setColor(Color.green);
+                    } else {
+                        g2D.setColor(Color.RED);
+                    }
+                    Point p = node.getPoint();
+
+                    int wX = p.x() * (gp.getTileSize()/3);
+                    int wY = p.y() * (gp.getTileSize()/3);
+
+                    int sX = Util.worldXToScreenX(wX);
+                    int sY = Util.worldYToScreenY(wY);
+
+                    if (Util.isOnScreen(wX, wY, gp)) {
+                        g2D.fillRoundRect(sX, sY, 10, 10, 5, 5);
+                    }
+                }
+            }
+
+            g2D.setColor(new Color(0, 1, 1, 1f));
+            thickness = 1f;
+            g2D.setStroke(new BasicStroke(thickness));
+
+            for (Entity entity : gp.getEntityManager().activeNPCEntities) {
+                PointPath path = entity.getCurrentPointPath();
+                if (path == null || path.points().length == 0) continue;
+
+                Point prev = null;
+                g2D.setColor(entity.getPointColor());
+                for (int i = entity.getCurrentPointIndex(); i < path.points().length; i++) {
+                    Point p = path.points()[i];
+                    int sX = Util.GridXToScreenX(p.x());
+                    int sY = Util.GridYToScreenY(p.y());
+
+                    g2D.fillRoundRect(sX, sY, 10, 10, 5, 5);
+
+                    if (prev != null) {
+                        int psX = Util.GridXToScreenX(prev.x());
+                        int psY = Util.GridYToScreenY(prev.y());
+                        g2D.drawLine(psX, psY, sX, sY);
+                    }
+
+                    prev = p;
+                }
+
+                Point last = path.points()[path.points().length-1];
+
+                int wX = last.x() * gp.getTileSize();
+                int wY = last.y() * gp.getTileSize();
+
+                int sX = Util.worldXToScreenX(wX);
+                int sY = Util.worldYToScreenY(wY);
+
+                if (Util.isOnScreen(wX, wY, gp)) {
+                    g2D.drawRect(sX, sY, gp.getTileSize(), gp.getTileSize());
+                }
+            }
+
+            g2D.setStroke(old);
         }
     }
 

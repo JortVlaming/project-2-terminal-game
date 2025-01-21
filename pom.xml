@@ -8,6 +8,12 @@
     <artifactId>project-2-terminal-game</artifactId>
     <version>1.0</version>
 
+    <properties>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
+        <astar_version>0.2.3</astar_version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -24,4 +30,20 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.crystalcoding</groupId>
+            <artifactId>pathfinding</artifactId>
+            <version>${astar_version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/aStar_pathfinding-${astar_version}-all.jar</systemPath>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.17.0</version>
+        </dependency>
+    </dependencies>
 </project>

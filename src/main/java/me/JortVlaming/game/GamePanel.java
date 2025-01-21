@@ -1,5 +1,6 @@
 package me.JortVlaming.game;
 
+import com.crystalcoding.pathfinding.PathfindingManager;
 import me.JortVlaming.entity.Entity;
 import me.JortVlaming.entity.EntityManager;
 import me.JortVlaming.entity.Player;
@@ -38,7 +39,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     // GAMELOOP SETTINGS
     boolean running = false;
-    boolean update_player = true;
     final int TARGET_FPS = 60;
     final boolean LIMIT_FPS = true;
 
@@ -59,6 +59,8 @@ public class GamePanel extends JPanel implements Runnable {
     Sound effects = new Sound();
     GUI GUI;
     EventHandler events;
+
+    PathfindingManager pathfindingManager;
 
     public GamePanel() {
         instance = this;
@@ -92,6 +94,9 @@ public class GamePanel extends JPanel implements Runnable {
         player = new Player(this, input);
         GUI = new GUI(this);
         events = new EventHandler(this);
+
+        pathfindingManager = new PathfindingManager(maxWorldCol*3, maxWorldRow*3);
+        pathfindingManager.setPrintInformation(false);
 
         tileManager.loadMap_csv("test");
         objectManager.loadObject_csv("test");
@@ -351,8 +356,6 @@ public class GamePanel extends JPanel implements Runnable {
     public ObjectManager getObjectManager() {
         return objectManager;
     }
-    //</editor-fold>
-
 
     public static GamePanel getInstance() {
         return instance;
@@ -369,4 +372,11 @@ public class GamePanel extends JPanel implements Runnable {
     public EntityManager getEntityManager() {
         return entityManager;
     }
+
+    public PathfindingManager getPathfindingManager() {
+        return pathfindingManager;
+    }
+
+    //</editor-fold>
+
 }
